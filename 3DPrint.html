@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Sam's Portfolio'</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+       <!-- FontAwesome -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link href="css/agency.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+
+
+
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+       <!-- Brand and toggle get grouped for better mobile display -->
+       <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      <a class="navbar-brand" href="index.html">Samuel Belden</a>
+    </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="index.html"><b>Home</b> </a></li>
+          
+
+         <li><a href="ProjectsIndex.html"><b>Projects</b> </a></li>
+         <li><a href="ActivitiesIndex.html"><b>Activities</b></a></li>
+         <li><a href="ResearchIndex.html"><b>Research</b></a></li>
+         <li><a href="ResumeIndex.html"><b>Resume</b></a></li>
+         <li class="active"><a href="OtherIndex.html"><b>Other</b> <span class="sr-only">(current)</span></a></li>
+         <li><a href="ContactIndex.html"><b>Contact</b> </a></li>
+
+      </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+  </nav>
+
+
+
+
+<br><br><br>
+
+
+
+
+    <!-- Portfolio modal 4 -->
+    <div class="portfolio-modal modal fade" id="portfoliomodal4" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+
+
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        <div class="modal-body">
+                            <h2>3D Scanning and Printing</h2>
+                             <p class="item-intro text-muted">Week 3 - Printing items that can't be machined</p>
+
+                    </div>
+                     </div>
+                    </div>
+
+
+               <div class="row">
+                   <div class="col-lg-8 col-lg-offset-2">
+                  <div class="modal-body"> 
+
+                   <p> <b>Overview of the week</b><br></br>This week we were taught 3D printing and scanning in the class. We were shown how to use the 3D printers (both 1 material and 2 material printers) and how to use the 3D scanner. Our assignment for the week was to try to print something that couldn't be machined (to show where additive manufacturing beats subtractive manufacturing) and to try to scan some object. I took advantage of the open assignment nature, and used this week to learn Rhino and Grasshopper parametric modeling. My goal was to create some unique 3D parametric shapes to print. After many, many, many hours of staring at Grasshopper and Rhino, I eventually figured a few things out. <br></br></p> 
+                    </div>
+                   </div>
+                 </div>
+
+
+              <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_1.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_1.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_2.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_2.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+
+               <div class="row">
+                  <div class="col-lg-8 col-lg-offset-2">
+                    <div class="modal-body"> 
+
+                    <p><i>Above: Several of the final objects that I designed after being rendered in Rhino. They were designed using Grasshopper parametric modeling with a WeaverBird plugin. The topology comes from using 3D Voronoi Cells as discussed below.</i><br></br><b>Initial Idea Formulation</b><br></br>Upon hearing the assignment for the week, I knew that I wanted to do something with parametric strucutres. I had heard that Rhino and Grasshopper were good at this, so I decided to give them a try (many, many hours later, I still understand very little about how they work... and how they don't work...). I did a bit of research on how they cool parametric structures are created in Grasshopper, and happened upon voronoi cells. I've heard of voronoi cells before, as they are used a bit in Materials Science, but I had no idea they were the basis of some really cool algorithms in Grasshopper. <br></br> 
+
+                    <b>A bit of background on voronoi cells and diagrams</b><br></br>
+
+                    Voronoi diagrams are widely used in computer science, architecture, materials science, chemistry, and a variety of other fields. According to Wikipedia, a Voronoi diagram is a "partitioning of a plane into regions based on distance to points in a specific subset of the plane. That set of points (called seeds, sites, or generators) is specified beforehand, and <i>for each seed there is a corresponding region consisting of all points closer to that seed than to any other.</i> These regions are called Voronoi cells. The Voronoi diagram of a set of points is dual to its Delaunay triangulation." </p>
+
+                    </div>
+                  </div>
+                </div>
+
+
+              <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_13.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_13.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_26.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_26.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+
+
+               <div class="row">
+                  <div class="col-lg-8 col-lg-offset-2">
+                    <div class="modal-body"> 
+
+                    <p><i>Above: The image on the left depicts a geometric Euclidian distance representation of a 2D voronoi tessellation. The image on the right depicts some grains in a metal sample under a microscope. The grain boundarys follow voroni behavior because as the material cools from a liquid state, the seed crystals grow evenly in 3 dimensions at a constant rate, forming 3D voronoi cells.</i><br></br> Every pixel in a colored region in the above image is closer to the central (seed) point in that colored region than any other seed point in a different colored region. Every point in the pink region is closer to the pink seed point that to any other seed point in the red or green or blue region for example.<br></br>
+
+                    The above 2D Voronoi diagram can also be done in 3D to create 3-Dimensional Voronoi cells. In general, a cross section of a 3D Voronoi tessellation is not in itself a 2D Voronoi tessellation.<br></br> 
+
+                    <b>Grasshopper Algorithm </b>
+
+                    </p>
+
+                    </div>
+                  </div>
+                </div>
+
+
+
+             <div class="row">
+
+           <div class="col-xs-5 col-sm-offset-1">
+            <a href="img/portfolio/week3/week3_7.jpg">
+              <img class = "img-responsive" src="img/portfolio/week3/week3_7.jpg" alt=""/>
+              </a>
+            </div>
+            <div class="col-xs-5 ">
+            <a href="img/portfolio/week3/week3_8.jpg">
+              <img class = "img-responsive" src="img/portfolio/week3/week3_8.jpg" alt=""/>
+              </a>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-xs-8 col-sm-offset-2">
+            <a href="img/portfolio/week3/week3_23.jpg">
+              <img class = "img-responsive" src="img/portfolio/week3/week3_23.jpg" alt=""/>
+              </a>
+            </div>
+          </div>
+
+          <div class="row">
+                  <div class="col-lg-8 col-lg-offset-2">
+                    <div class="modal-body"> 
+
+
+
+                    <p><i>Above: The images show the Grasshopper nodes and general workflow to make the voronoi cell paterns in the objects below.</i><br></br>I developed most of the initial Grasshopper workflow that generates and scales the voronoi cells myself, and combined a few different workflow algorithms for joining the meshes together that I found online. Surprisingly, it seems to work okay. <br></br> 
+
+                    The general workflow is described below:<br></br> </p>
+
+                    <ol class="text-left">
+                   <li>A brep (box, sphere, region, etc.) is formed<br></br></li> 
+                    <li>That brep - which I will call a box from here on out - is filled with a certain amount of random points<br></br> </li>
+                    <li>Those points are used as the seed points for a 3D voronoi tessellation algorithm built into Grasshopper <br></br> </li>
+                   <li>The voronoi cells are exploded into all of the constituent faces, and those faces are scaled down in size to seperate them from each other<br></br> </li>
+                   <li>The vornoi cells themselves are scaled down to seperate them from each other<br></br> </li>
+                   <li>The vertices from both the scaled down voronoi cells and the scaled down faces are combined together into a giant list<br></br></li>
+                   <li>This list is then culled from points outside a scaled down box (brep) - the points outside this scaled down box are removed from the list<br></br> </li>
+                   <li>These points are then combined into meshes to form the mesh surfaces that form the basis of the objects<br></br> </li>
+                   <li>These mesh units are then joined together, smoothed out using an algorithm from a plugin called WeaverBird, and thickened (changing the mesh to a solid, printable object)<br></br> </li>
+                    </ol>
+                   
+                   <p> <br></br>The object can then be rendered or exported as an STL file for printing.<br></br> 
+
+
+                    <b>Process of Developing a 3D Voronoi Tessellation </b>
+
+                    </p>
+
+                    </div>
+                  </div>
+            </div>
+
+             
+                <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_24.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_24.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_14.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_14.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+                             <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_15.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_15.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_16.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_16.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+
+          
+
+               <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_17.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_17.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_18.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_18.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+              
+
+               <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_19.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_19.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_20.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_20.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+               <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_21.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_21.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_22.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_22.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+
+
+
+          <div class="row">
+                  <div class="col-lg-8 col-lg-offset-2">
+                    <div class="modal-body"> 
+
+                    <p><i>Above: General process workflow in Rhino going from an empty box brep to a 3D printable voronoi tessellated shape.</i><br></br><b>Various pieces that I made </b></p>
+
+                    </div>
+                  </div>
+            </div>
+
+
+          <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_9.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_9.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_10.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_10.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+                             <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_11.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_11.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_12.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_12.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+          <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_1.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_1.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_2.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_2.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+                             <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_3.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_3.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_4.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_4.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+
+                </div>
+
+                             <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_5.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_5.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_6.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_6.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+
+          <div class="row">
+                  <div class="col-lg-8 col-lg-offset-2">
+                    <div class="modal-body"> 
+
+                    <p><i>Above: Several of the final objects that I designed in Rhino and Grasshopper. The next step is to attempt to 3D print some of them.</i><br></br>
+
+                    <b>3D Printing the Above Objects</b><br></br>
+
+                    I had a lot of trouble trying to 3D print these objects in the single material 3D printers just based on the topology of the objects. There are a lot of overhangs on pretty much every object, so without any support material, the pieces just wouldn't print correctly. The initial layer or two might lay down well, but everything above that would turn into silly string on the end of the printer head and not stick correctly to the piece. <br></br>
+
+                    This could be fixed by using the dual material 3D printer that can also print out a disolvable support material. However, that process would be quite time intensive depending on the size of the object I was printing and the number of cells in said object. Not wanting to hog the printer by having a print going for more than 12 hours, I chose to wait until after Wednesday to print any of the more complex objects. Additionally, finding any time available on the dual material 3D printer anyways was quite hard, as it was busy every time I checked it. I will update on the printing in the next few days when I get a chance to print my objects. <br></br>
+                    </p>
+
+                    </div>
+                  </div>
+            </div>
+
+              <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_29.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_29.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_29.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_29.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+
+         <div class="row">
+                  <div class="col-lg-8 col-lg-offset-2">
+                    <div class="modal-body"> 
+
+                    <p>   <b>3D Scanning an Object</b><br></br>
+
+                    I had a bit of trouble using the 3D scanner, but was eventually able to get the hang of it. It just requires a bit of gentle hadling and slow rotation to get a decent scan. I scanned a water bottle.<br></br>
+
+                    </p>
+
+                    </div>
+                  </div>
+            </div>
+
+
+              <div class="row">
+                          <div class="col-xs-5 col-sm-offset-1">
+                          <a href="img/portfolio/week3/week3_27.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_27.jpg" alt=""/>
+                            </a>
+                          </div>
+
+                        <div class="col-xs-5">
+                          <a href="img/portfolio/week3/week3_28.jpg">
+                            <img class = "img-responsive" src="img/portfolio/week3/week3_28.jpg" alt=""/>
+                            </a>
+                        </div>
+               </div>
+
+
+       </div>       
+  </div>
+</div>
+
+
+
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>
