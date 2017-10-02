@@ -160,9 +160,9 @@
 
                    <p><br></br>
 
-                    <b><a name="1"></a> <center>General STM Project Overview</center></b><br style="line-height:0px;" /><a href="#top"><center>To Top</center></a> <br></br>
+                    <b><a name="1"></a> General STM Project Overview</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
 
-                    <center>The general idea is to build an STM (scanneling tunneling electron microscope) that has the ability to see (at a minimum) individual carbon atoms in a graphite lattice. There have been a few people that have done this and posted their machine images and general ideas/process online, but not too many. I'd like to continue where they left off, and really document this build very well so that other people can follow in my footsteps easily. The machine makes use of pretty cheap materials (using a piezoelectric disk instead of a piezoelectric tube, tungsten wire instead of platinum wire, manual calibration of z-axis instead of stepper motor calibraton, etc.), but should still be funcitonal, and for a lot less money (on the order of $200-$300). The goal is to replicate their work and document the process in extreme detail, well hopefully being able to achieve atomic resolution on some HOPG (highly oriented pyrolitic graphite) such as seen in the picture below.</center>
+                    The general idea is to build an STM (scanneling tunneling electron microscope) that has the ability to see (at a minimum) individual carbon atoms in a graphite lattice. There have been a few people that have done this and posted their machine images and general ideas/process online, but not too many. I'd like to continue where they left off, and really document this build very well so that other people can follow in my footsteps easily. The machine makes use of pretty cheap materials (using a piezoelectric disk instead of a piezoelectric tube, tungsten wire instead of platinum wire, manual calibration of z-axis instead of stepper motor calibraton, etc.), but should still be funcitonal, and for a lot less money (on the order of $200-$300). The goal is to replicate their work and document the process in extreme detail, well hopefully being able to achieve atomic resolution on some HOPG (highly oriented pyrolitic graphite) such as seen in the picture below.
 
                    </p> 
                     </div>
@@ -176,7 +176,7 @@
 
                    <p><b>
 
-                   <center>Best Current Scan </center></b>
+                   Best Current Scan </b>
 
                    </p> 
                     </div>
@@ -188,7 +188,7 @@
              
                    <p><b>
 
-                  <center> Goal Scan </center></b>
+                   Goal Scan </b>
 
                    </p> 
                     </div>
@@ -198,7 +198,7 @@
 
 
           <div class="row">
-            <div class="col-sm-4 col-sm-offset-2">
+            <div class="col-sm-4 col-sm-offset-1">
             <a href="img/portfolio/final_project/final_54.png">
               <img class = "img-responsive" src="img/portfolio/final_project/final_54.png" alt=""/>
               </a>
@@ -211,7 +211,38 @@
           </div>
           </div>
 
-            
+                <div class="row">
+                   <div class="col-lg-8 col-lg-offset-2">
+                  <div class="modal-body"> 
+
+                   <p><br></br>
+
+                    <b><a name="25"></a> Current Status of STM</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br></p>
+
+                    <p align="left">
+
+
+                    1) <b>What does it do?</b> <br>
+                    2) <b>Who's done it beforehand?</b> <br>
+                    3) <b>What did I design?</b>  <br>
+                    4) <b>What materials and components were used?</b><br>
+                    5) <b>Where did they come from?</b> <br>
+                    6) <b>How much did they cost?</b> <br>
+                    7) <b>What parts and systems were made?</b>  <br>
+                    8) <b>What processes were used?</b><br>
+                    9) <b>What questions were answered?</b> <br>
+                    10) <b>How was it evaluated?</b> <br>
+                    11) <b>What are the implications?</b>  <br></p>
+
+                    <p>
+                        
+
+                    </p>
+
+                   </p> 
+                    </div>
+                   </div>
+                 </div>
 
 
                 <div class="row">
@@ -220,11 +251,11 @@
 
                    <p><br></br>
 
-                    <b><a name="2"></a> <center>Theory of STM Operation</b></center><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
+                    <b><a name="2"></a> Theory of STM Operation</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
 
-                   <center> The actual in-depth theory of the STM is quite complex, so I will only provide a relatively surface level overview here. I will put some of the more in-depth papers on the theory of Scanning Tunneling Microscopy in the "Additional Resources and Links" section at the end of this site. <br></br>
+                    The actual in-depth theory of the STM is quite complex, so I will only provide a relatively surface level overview here. I will put some of the more in-depth papers on the theory of Scanning Tunneling Microscopy in the "Additional Resources and Links" section at the end of this site. <br></br>
 
-                     In general, a piezoectric disk (or tube) is used to lower an atomically fine electrode tip (tungsten) to within 5-10 Angstroms (0.5-1.0nm) of the surface of the sample material. When a bias voltage is applied to the sample, electrons will quantum tunnel from the electrode tip to the sample materiial. A tunneling current amplifer then reads this current and sends it back to the control electronics. The scan head scrolls over the surface of the sample, measuring the current, and reading the data over serial into the computer to display the image and perform PI control over the scanner. I will cover this all in more depth below.</center>
+                     In general, a piezoectric disk (or tube) is used to lower an atomically fine electrode tip (tungsten) to within 5-10 Angstroms (0.5-1.0nm) of the surface of the sample material. When a bias voltage is applied to the sample, electrons will quantum tunnel from the electrode tip to the sample materiial. A tunneling current amplifer then reads this current and sends it back to the control electronics. The scan head scrolls over the surface of the sample, measuring the current, and reading the data over serial into the computer to display the image and perform PI control over the scanner. I will cover this all in more depth below.
 
                    </p> 
                     </div>
@@ -259,11 +290,11 @@
                    <div class="col-lg-8 col-lg-offset-2">
                   <div class="modal-body"> 
 
-                   <p><i><center>Image Sources [Left: (http://www.slideshare.net/guestc5e21a/principle-of-a-f-s), Middle: (http://images.slideplayer.com/21/6281817/slides/slide_2.jpg), Right: (http://old.icnanotox.org/tag/stm/)]</i></center><br></br>
+                   <p><i>Image Sources [Left: (http://www.slideshare.net/guestc5e21a/principle-of-a-f-s), Middle: (http://images.slideplayer.com/21/6281817/slides/slide_2.jpg), Right: (http://old.icnanotox.org/tag/stm/)]</i><br></br>
 
-                    <b><a name="3"></a> <center>Tunneling Theory</center></b><br style="line-height:0px;" /><a href="#top"><center>To Top</center></a> <br></br>
+                    <b><a name="3"></a> Tunneling Theory</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
 
-                    <center>Scanning Tunneling Microscopy (STM) tunneling theory is quite complex, but may be simplified greatly by several approximations. STM involves the tunneling of electrons through vacuum (or in this case, air) from the tip of the STM to the sample. For simplification, this can be considered as tunneling between two metallic electrodes, separated by a vacuum region. The potential in the vacuum region acts as a barrier to electrons. In this simplified form, one can apply the trivial solution of the Schrodinger equation, applied to a rectangular barrier:</center><br style="line-height:0px;" />
+                    Scanning Tunneling Microscopy (STM) tunneling theory is quite complex, but may be simplified greatly by several approximations. STM involves the tunneling of electrons through vacuum (or in this case, air) from the tip of the STM to the sample. For simplification, this can be considered as tunneling between two metallic electrodes, separated by a vacuum region. The potential in the vacuum region acts as a barrier to electrons. In this simplified form, one can apply the trivial solution of the Schrodinger equation, applied to a rectangular barrier:<br style="line-height:0px;" />
                    </p> 
                     </div>
                    </div>
@@ -282,9 +313,9 @@
 
                   <p><br style="line-height:0px;" />
 
-                   <center> In classical physics, if an electron has energy E smaller than the potential of the gap, then there is no way for the electron to cross that potential gap. It would first need to aquire that energy somewhere. This is equivalent to saying that if I coast down a hill of height 10 meters on my bike, then I can make it partially up a hill of 20 meters height using that energy, but not all the way up. I would need to acquire more energy somehow (via peddeling or by starting on a higher hill to have more potential energy) to make it over the 20 meter height hill. However, in quantum mechanics, when an electon has a potential higher than the barier height, it oscillates (sinosoidally), and if it has an energy, E, below the barier height, it can cross that barrier with an exponentially decaying wavefunction. In this way, it only needs a small increase in energy to cross the barrier, which in this case is provided by a small bias voltage. This "quantum tunneling" of electrons across bariers that they shouldn't classically be able to cross provides the basis for all of scanning tunneling microscopy. This is equivalent to the biker somehow disapearing from one side of the hill and reapearing on the other side of the barrier. Now let's look at the math behind this to see if we can isolate the tunneling current as a function of the bias voltage, seperation distance, and potential barrier between the electrode tip and the sample. <br></br>
+                    In classical physics, if an electron has energy E smaller than the potential of the gap, then there is no way for the electron to cross that potential gap. It would first need to aquire that energy somewhere. This is equivalent to saying that if I coast down a hill of height 10 meters on my bike, then I can make it partially up a hill of 20 meters height using that energy, but not all the way up. I would need to acquire more energy somehow (via peddeling or by starting on a higher hill to have more potential energy) to make it over the 20 meter height hill. However, in quantum mechanics, when an electon has a potential higher than the barier height, it oscillates (sinosoidally), and if it has an energy, E, below the barier height, it can cross that barrier with an exponentially decaying wavefunction. In this way, it only needs a small increase in energy to cross the barrier, which in this case is provided by a small bias voltage. This "quantum tunneling" of electrons across bariers that they shouldn't classically be able to cross provides the basis for all of scanning tunneling microscopy. This is equivalent to the biker somehow disapearing from one side of the hill and reapearing on the other side of the barrier. Now let's look at the math behind this to see if we can isolate the tunneling current as a function of the bias voltage, seperation distance, and potential barrier between the electrode tip and the sample. <br></br>
 
-                    For a rectangular barrier, we get a wavefuntion of: </center>
+                    For a rectangular barrier, we get a wavefuntion of: 
 
                     <br style="line-height:0px;" />
                    </p> 
@@ -305,7 +336,7 @@
 
                   <p><br style="line-height:0px;" />
 
-                    <center>The probability of finding an electron behind the barrier of width d is: </center>
+                    The probability of finding an electron behind the barrier of width d is: 
 
                     <br style="line-height:0px;" />
                    </p> 
@@ -328,7 +359,7 @@
 
                   <p><br style="line-height:0px;" />
 
-                   <center> In STM (scanning tunneling microscopy), a bias voltage is applied to the sample such that the tunneling current is caused from the reduced barrier height. This barrier height can be approximated by the average workfunction of the sample and tip materials. The workfuntion of a material is essentially the energy required to fully strip an electron from the surface of that material and place it into vacuum. The work function is different for the surface and bulk of a material, but we are only concerned about the surface here. The work functions for materials have already been worked out experimentally and can be found online. <br></br>
+                    In STM (scanning tunneling microscopy), a bias voltage is applied to the sample such that the tunneling current is caused from the reduced barrier height. This barrier height can be approximated by the average workfunction of the sample and tip materials. The workfuntion of a material is essentially the energy required to fully strip an electron from the surface of that material and place it into vacuum. The work function is different for the surface and bulk of a material, but we are only concerned about the surface here. The work functions for materials have already been worked out experimentally and can be found online. <br></br>
 
                     The critical parameter in this solution is k. One finds that:<br></br>
 
@@ -336,7 +367,7 @@
 
                     where, phi represents the barrier potential, E is the energy of the particular state, and h corresponds to the reduced Planck constant. In order to simplify the model, phi can be substituted by its average value across the potential barrier; however, generally, phi would not be constant. With this simplification, the system then becomes a rectangular potential barrier, which is actually quite easy to solve. 
 
-                    When the bias voltage is much smaller than the workfunction, the inverse decay length of the electrons can be further simplifed to: </center>
+                    When the bias voltage is much smaller than the workfunction, the inverse decay length of the electrons can be further simplifed to: 
      <br style="line-height:0px;" />
                    </p> 
                     </div>
@@ -358,7 +389,7 @@
 
                   <p><br style="line-height:0px;" />
 
-                   <center> The current is then proportional to the probability of electrons to tunnel through the barrier. From quantum mechanics, we know that the probability of electrons to tunnel is proportional to the wave function squared. Then, the current becomes proportional to: </center>
+                    The current is then proportional to the probability of electrons to tunnel through the barrier. From quantum mechanics, we know that the probability of electrons to tunnel is proportional to the wave function squared. Then, the current becomes proportional to: 
  
                     <br style="line-height:0px;" />
                    </p> 
@@ -381,8 +412,8 @@
 
                   <p><br style="line-height:0px;" />
 
-<center>
-                  Finally, by using the definition of the local density of states: </center>
+
+                  Finally, by using the definition of the local density of states: 
 
                   <br style="line-height:0px;" />
                    </p> 
@@ -405,7 +436,7 @@
 
                   <p><br style="line-height:0px;" />
 
-                   <center> the current can be shown as:</center>
+                    the current can be shown as:
 
                     <br style="line-height:0px;" />
                    </p> 
@@ -429,11 +460,11 @@
                   <p><br style="line-height:0px;" />
                  
 
-                   <center> where, d is defined as the separation between the tip and the sample. This result turns out to be the key to the STM operation. If an atomically sharp tip is used, the tunneling current from the first atom of the tip will be exponentially larger than that of the tip atoms which are slightly behind it. Considering general work function values, and substituting this for (phi-E) in the equation for k, one finds that the tunneling current decreases about an order of magnitude for every angstrom of separation, d, between the tip and the sample. <br></br>
+                    where, d is defined as the separation between the tip and the sample. This result turns out to be the key to the STM operation. If an atomically sharp tip is used, the tunneling current from the first atom of the tip will be exponentially larger than that of the tip atoms which are slightly behind it. Considering general work function values, and substituting this for (phi-E) in the equation for k, one finds that the tunneling current decreases about an order of magnitude for every angstrom of separation, d, between the tip and the sample. <br></br>
 
                     This gives us unprecidented vertical resolution in the scan head. Because the current increases by a factor of 10 for every angstron, we can actually use this to get 0.01 Angstrom accuracy in the vertical scanning with some relatively simple electronics and mechanics.<br></br>
 
-                    Finally, if we wanted a more accurate calculation of the current density, we would need to solve Schrodinger's equation for all three regions (before, in, and after the barrier) for a verticaly varying electic field strength, leading us to a transition probability of:</center>
+                    Finally, if we wanted a more accurate calculation of the current density, we would need to solve Schrodinger's equation for all three regions (before, in, and after the barrier) for a verticaly varying electic field strength, leading us to a transition probability of:
 
 
                     <br style="line-height:0px;" />
@@ -456,10 +487,10 @@
                   <div class="modal-body"> 
 
                    <p>
-                    <b><a name="4"></a> <center>Piezoelectric Tube/Disk Theory</center></b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
+                    <b><a name="4"></a> Piezoelectric Tube/Disk Theory</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
 
-<center>
-                    A piezoceramic tube/disk is a ceramic tube/disk in which the many molecular dipoles, or positive-negative charge separations, are polarized at an elevated temperature by applying a (typically) positive voltage to an outer electrode (inner at ground). The positive outer voltage causes the molecules to partially align themselves with the positive directed outward, resulting in + outer and - inner radial polarization. The ceramic is then cooled to retain this polarization permanently. The resulting ceramic has a net negative charge on the inside surface and net positive charge on the outside surface. When a smaller voltage is then applied with the same polarity as the polarizing voltage, the element experiences a temporary expansion in the polarizing direction (i.e., the tube/disk radius expands) and contraction in the perpendicular direction (i.e., the tube length contracts). It is this contraction that results in the tube/disk bending, thus allowing x-y scanning. <br></br></center>
+
+                    A piezoceramic tube/disk is a ceramic tube/disk in which the many molecular dipoles, or positive-negative charge separations, are polarized at an elevated temperature by applying a (typically) positive voltage to an outer electrode (inner at ground). The positive outer voltage causes the molecules to partially align themselves with the positive directed outward, resulting in + outer and - inner radial polarization. The ceramic is then cooled to retain this polarization permanently. The resulting ceramic has a net negative charge on the inside surface and net positive charge on the outside surface. When a smaller voltage is then applied with the same polarity as the polarizing voltage, the element experiences a temporary expansion in the polarizing direction (i.e., the tube/disk radius expands) and contraction in the perpendicular direction (i.e., the tube length contracts). It is this contraction that results in the tube/disk bending, thus allowing x-y scanning. <br></br>
 
                     <a href="http://hackaday.com/2015/12/10/esoteric-actuators/" ></a>
                     <br style="line-height:0px;" />
@@ -481,7 +512,7 @@
 
                       <p><br style="line-height:0px;" />
 
-                  <center>  In order to achieve scanning in the X and Y directions, the outer electrode of the disk is sectioned into quarters. The outer electrode is grounded. When a positive voltage is applied to one of the quartered electrodes, that segment of the disk contracts perpendicular to the electric field. This causes the whole disk to bend perpendicular to its axis. It is best to use push-pull voltages on opposite tube quadrants. A single voltage on one quadrant will result in tube bending in x or y, but also some undesirable net motion in the z-direction. Opposite polarity voltages of equal magnitude on opposite quadrants will bend the disk with no net z motion. Orthogonal x-y motion is obtained by controlling the voltages of the two electrode pairs in an additive vector fashion. </center><br style="line-height:0px;" />
+                    In order to achieve scanning in the X and Y directions, the outer electrode of the disk is sectioned into quarters. The outer electrode is grounded. When a positive voltage is applied to one of the quartered electrodes, that segment of the disk contracts perpendicular to the electric field. This causes the whole disk to bend perpendicular to its axis. It is best to use push-pull voltages on opposite tube quadrants. A single voltage on one quadrant will result in tube bending in x or y, but also some undesirable net motion in the z-direction. Opposite polarity voltages of equal magnitude on opposite quadrants will bend the disk with no net z motion. Orthogonal x-y motion is obtained by controlling the voltages of the two electrode pairs in an additive vector fashion. <br style="line-height:0px;" />
                        </p> 
                         </div>
                        </div>
@@ -499,7 +530,7 @@
 
                       <p><br style="line-height:0px;" />
 
-                  <center>  Motion of the tube in the Z direction is obtained by applying a voltage to all outside electrodes uniformly. A positive voltage causes a uniform contraction of the tube. A negative voltage causes an expansion. Important Note: Do not try to get increased range by applying an equal and opposite voltage to the inner electrode. This will tend to depolarize the piezo tube. The inner electrode should always be grounded, or at the negative pole, i.e., if your range is +-18 volts, the inner electrode should be held at a steady -18 volts.</center>
+                    Motion of the tube in the Z direction is obtained by applying a voltage to all outside electrodes uniformly. A positive voltage causes a uniform contraction of the tube. A negative voltage causes an expansion. Important Note: Do not try to get increased range by applying an equal and opposite voltage to the inner electrode. This will tend to depolarize the piezo tube. The inner electrode should always be grounded, or at the negative pole, i.e., if your range is +-18 volts, the inner electrode should be held at a steady -18 volts.
 
                     <br style="line-height:0px;" />
                        </p> 
@@ -522,7 +553,7 @@
 
 
 
-                  <center>  Crystallographic conventions are used to describe the orientation of a poled piezoceramic and to characterize the performance parameters of the various piezoceramic meterials. The specific type of performance we are concerned with in a STM is:<br></br>
+                    Crystallographic conventions are used to describe the orientation of a poled piezoceramic and to characterize the performance parameters of the various piezoceramic meterials. The specific type of performance we are concerned with in a STM is:<br></br>
 
                     da,b where:<br></br>
 
@@ -609,7 +640,7 @@
                     2. Recording the commanded X and Y driver voltages<br></br>
 
                     Due to the two errors mentioned above, an uncorrected scan results in a distorted image. An error correcting scheme for the driver voltages may be employed to ensure accurate tip positioning and straight scanning. This would take the form, normally, of a look-up-table (LUT) of modified drive voltages. There would have to be a different LUT for each scan size and speed. -->
-</center>
+
 
                    </p> 
                     </div>
@@ -623,9 +654,9 @@
 
                    <p>
 
-                    <b><a name="5"></a> <center>Current Measurement Theory (Transimpedance Amp)</center></b><br style="line-height:0px;" /><a href="#top"><center>To Top</center></a> <br></br>
+                    <b><a name="5"></a> Current Measurement Theory (Transimpedance Amp)</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
 
-                    <center>The most common approach to amplifying the tunneling current is to use something called a transimpedance amplifier [TIA]. This is basically a current-to-voltage converter, most commonly implemented via an op-amp circuit. The TIA can be used to amplify the current output of many different machines, including photo detectors, accelerometers, and a huge variety of sensors. </center><br></br>
+                    The most common approach to amplifying the tunneling current is to use something called a transimpedance amplifier [TIA]. This is basically a current-to-voltage converter, most commonly implemented via an op-amp circuit. The TIA can be used to amplify the current output of many different machines, including photo detectors, accelerometers, and a huge variety of sensors. <br></br>
 
                     <a href="https://en.wikipedia.org/wiki/Transimpedance_amplifier"></a>
                     <br style="line-height:0px;" />
@@ -648,7 +679,7 @@
                       <div class="modal-body"> 
                       <p><br style="line-height:0px;" />
 
-                      <center>In this case, I will be using this making this TIA with a special op-amp that has an ultra low input bias current, and using a 100M Ohm feedback resistor to get amplification on the order of 100,000,000. This means a current of 1nA-10nA will read as a voltage of 100mV to 1V, easily readable by a microchip's ADC. However, when using an op-amp with a relatively high input bias current (on the order of the tunneling current - 1nA), that current will also get summed up/amplified, leading to huge errors in the current measurement. I will be using the ADA4530 for this current amplifier circuit, as the ADA4530 has a guaranteed input bias current of only 20fA at room temperature! The designs for this can be seen in the electronics section below, but of special note is the guard ring I implemented around the current input node to reduce unwanted voltage and current noise - the guard ring is held at ground to absorb the noise. Finally, even though the set point for this scope will be around 1nA of current, it is important to have some extra range in order to not damage the preAmp circuit. With the ADA4530 and a 100M Ohm resistor, I can measure up to around 100nA of current before the circuit is overwhelmed.</center>
+                      In this case, I will be using this making this TIA with a special op-amp that has an ultra low input bias current, and using a 100M Ohm feedback resistor to get amplification on the order of 100,000,000. This means a current of 1nA-10nA will read as a voltage of 100mV to 1V, easily readable by a microchip's ADC. However, when using an op-amp with a relatively high input bias current (on the order of the tunneling current - 1nA), that current will also get summed up/amplified, leading to huge errors in the current measurement. I will be using the ADA4530 for this current amplifier circuit, as the ADA4530 has a guaranteed input bias current of only 20fA at room temperature! The designs for this can be seen in the electronics section below, but of special note is the guard ring I implemented around the current input node to reduce unwanted voltage and current noise - the guard ring is held at ground to absorb the noise. Finally, even though the set point for this scope will be around 1nA of current, it is important to have some extra range in order to not damage the preAmp circuit. With the ADA4530 and a 100M Ohm resistor, I can measure up to around 100nA of current before the circuit is overwhelmed.
 
                    </p> 
                     </div>
@@ -662,9 +693,9 @@
 
                    <p>
 
-                    <b><a name="6"></a> <center>Noise Damping Theory</center></b><br style="line-height:0px;" /><a href="#top"><center>To Top</center></a> <br></br>
+                    <b><a name="6"></a> Noise Damping Theory</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
 
-                   <center> Noise tends to be the primary issue with building homemade STMs, as evidenced by many other makers' problems and advice. There is a multitude of vibrational frequencies that can disrupt the device (from lower frequencies such as building and ground vibrations to higher frequencies from nearby movement and even accoustic vibrations from sound waves such as people talking). These all need to be protected against. The primary sources of noise in the STM are normal vibrations, accoustic vibrations and electromagnetic interference. These are taken care of in my STM through the following means: </center><br>
+                    Noise tends to be the primary issue with building homemade STMs, as evidenced by many other makers' problems and advice. There is a multitude of vibrational frequencies that can disrupt the device (from lower frequencies such as building and ground vibrations to higher frequencies from nearby movement and even accoustic vibrations from sound waves such as people talking). These all need to be protected against. The primary sources of noise in the STM are normal vibrations, accoustic vibrations and electromagnetic interference. These are taken care of in my STM through the following means: <br>
 
                    </p> 
 
@@ -677,9 +708,9 @@
                     4) <b>Electromagnetic Shielding</b> (using some thick sheets of aluminum foil placed behind the speaker foam on the above frame)<br></p>
 
                     <p>
-                       <center> The vibration isolation and dampening is taken care of by hanging the entire scan head on some very large springs (approximately 26.3" extended - see bill of materials at the end). The scan head itself is actually quite rigid, so low frequency oscillations only cause the whole STM head to oscillate, not affecting the tip to sample distance and the scan. High frequency oscillations are the issue here. The springs create a pendulum with a resonant frequency of roughly 0.6 Hz (to isolate from horizontal vibrations) and a harmonic oscillator with a resonant frequency of almost exactly 1 Hz (to isolate from vertical vibrations). The entire setup, as well as the spacings between the metal disks, are mounted on Viton O-ring, which proves to be an extremely effective vibration dampener. Finally, there are a series of strong Neodymium magnets mounted under the aluminum disk to provide some extra eddy current dampening effects to dampen vibrations. Everything is connected using extremely fine 40 AWG wire to minimize vibrations transmission throughout the setup. <br></br>
+                        The vibration isolation and dampening is taken care of by hanging the entire scan head on some very large springs (approximately 26.3" extended - see bill of materials at the end). The scan head itself is actually quite rigid, so low frequency oscillations only cause the whole STM head to oscillate, not affecting the tip to sample distance and the scan. High frequency oscillations are the issue here. The springs create a pendulum with a resonant frequency of roughly 0.6 Hz (to isolate from horizontal vibrations) and a harmonic oscillator with a resonant frequency of almost exactly 1 Hz (to isolate from vertical vibrations). The entire setup, as well as the spacings between the metal disks, are mounted on Viton O-ring, which proves to be an extremely effective vibration dampener. Finally, there are a series of strong Neodymium magnets mounted under the aluminum disk to provide some extra eddy current dampening effects to dampen vibrations. Everything is connected using extremely fine 40 AWG wire to minimize vibrations transmission throughout the setup. <br></br>
 
-                        The accoustic dampening and electromagnetic shielding are carried out by some speaker foam and thick aluminum foil that I'd like to place in a frame around the entire STM. As a preliminary step, I will simply place an aluminum pot, with foam padding on the inside, over the entire scan head setup.</center>
+                        The accoustic dampening and electromagnetic shielding are carried out by some speaker foam and thick aluminum foil that I'd like to place in a frame around the entire STM. As a preliminary step, I will simply place an aluminum pot, with foam padding on the inside, over the entire scan head setup.
 
                     </p>
 
@@ -692,13 +723,13 @@
 
                    <p>
 
-                    <b><a name="7"></a> <center>Data Acquisition Theory and Techniques</center></b><br style="line-height:0px;" /><a href="#top"><center>To Top</center></a> <br></br>
+                    <b><a name="7"></a> Data Acquisition Theory and Techniques</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
 
-                  <center>  ***Work in progress*** <br></br>
+                    ***Work in progress*** <br></br>
 
                     Data is aquired via a 16 bit LTC ADC located on the main PCB away from the scan head. Since this ADC is located somewhat far away (a few feet) from the preAmp board, I will be taking a differential measurment to compensate for the noise picked up in the wiring. There are also a number of op-amps (LT1469 dual op-amp) for buffering and filtering the preAmp output and ground signals. Finally, these buffered and filtered preAmp signals are fed into the LTC2326-16 16-bit pseudo-differential ADC. <br></br>
 
-                    There is also a feedback loop using the Teensy 3.6. The teensy takes the log of the input data (because the tunneling current is exponentially proportional to the tip-sample distance), then looks up that value on an ADC table of 2^16 entries. Finally, that signal is fed into a PI loop, which then outputs the Z-piezo signal.</center>
+                    There is also a feedback loop using the Teensy 3.6. The teensy takes the log of the input data (because the tunneling current is exponentially proportional to the tip-sample distance), then looks up that value on an ADC table of 2^16 entries. Finally, that signal is fed into a PI loop, which then outputs the Z-piezo signal.
 
                    </p> 
                     </div>
@@ -710,11 +741,11 @@
 
                    <p><br></br>
 
-                    <b><a name="8"></a><center> Spectroscopic Theory and Techniques</center></b><br style="line-height:0px;" /><a href="#top"><center>To Top</center></a> <br></br>
+                    <b><a name="8"></a> Spectroscopic Theory and Techniques</b><br style="line-height:0px;" /><a href="#top">To Top</a> <br></br>
 
-                  <center>  Finally, as a stretch goal, it is actually possibly to use the STM as a spectrometer. Instead of scanning over the surface and measuring the current with the known bias voltgae, we can just keep the tip in the same position and vary the bias voltage. This plot of bias voltage vs tunneling current is unique for different elements, and will give us an exact plot of the different elements in the sample. This type of spectrometry is known as I/V spectrometry, and also as dI/dV spectrometry (because we are measuring the slope of the plot of current with respect to voltage).
+                    Finally, as a stretch goal, it is actually possibly to use the STM as a spectrometer. Instead of scanning over the surface and measuring the current with the known bias voltgae, we can just keep the tip in the same position and vary the bias voltage. This plot of bias voltage vs tunneling current is unique for different elements, and will give us an exact plot of the different elements in the sample. This type of spectrometry is known as I/V spectrometry, and also as dI/dV spectrometry (because we are measuring the slope of the plot of current with respect to voltage).
 
-                    ***More info on this to come***</center>
+                    ***More info on this to come***
 
                    </p> 
                     </div>
