@@ -1,0 +1,14 @@
+
+
+.test {
+        position: relative;
+        height:300px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+img {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
