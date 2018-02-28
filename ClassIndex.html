@@ -360,7 +360,7 @@
     <!-- Portfolio Modals -->
 
     <!-- Modal 1 -->
-    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true" style="display: block; padding-left: 0px;">
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true" >
       <div class="modal-dialog">
         <div class="modal-content">
           
@@ -395,5 +395,50 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+
+
+    <!-- Contact Form JavaScript -->
+    <script src="js/jqBootstrapValidation.js"></script>
+    <script src="js/contact_me.js"></script>
+
+    <!-- Custom Theme JavaScript -->
+    <script src="js/agency.js"></script>
+  
+  <!-- Fluidbox -->
+  <script src="js/jquery.fluidbox.min.js"></script>
+  <script src="js/jquery.ba-throttle-debounce.min.js"></script>
+  <script type="text/javascript" src="js/jquery.ba-throttle-debounce.min(1).js"></script>
+  <script>
+  $(function () {
+      $('#fluidboxed a').fluidbox();
+  });
+  </script>
+  
+  <!-- Prism -->
+  <script src="js/prism.js"></script>
+  
+  <!-- Code block toggle -->
+  <script>
+          $('.code-toggle').click(function() {
+            if(!$(this).data('toggled') || $(this).data('toggled') == 0) {
+              $(this).data('org-text', $(this).html());
+              $(this)
+              .data('toggled', 1)
+              .text($(this).attr('data-alt-text'))
+              .nextAll('pre')
+                .slideDown();
+            } else {
+              $(this)
+              .data('toggled', 0)
+              .text($(this).data('org-text'))
+              .nextAll('pre')
+                .slideUp();
+            }
+          }).nextAll('pre').hide();
+  </script>
+
+
+
+
   </body>
 </html>
