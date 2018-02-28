@@ -20,6 +20,32 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+   <style>
+#overlay {
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 2;
+    cursor: pointer;
+}
+
+#text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 50px;
+    color: white;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
+}
+</style>
+
   </head>
 
 
@@ -27,6 +53,19 @@
 
 
   <body>
+
+
+
+<script>
+function on() {
+    document.getElementById("overlay").style.display = "block";
+}
+
+function off() {
+    document.getElementById("overlay").style.display = "none";
+}
+</script>
+
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
@@ -86,7 +125,31 @@
 
 <div class="container">
 
+
+<div class="row">
+
+ <div class="col-md-4 col-sm-6 portfolio-item">
+            <a class="portfolio-link" data-toggle="modal" href="ClassIndex/#portfolioModal1">
+              <div class="portfolio-hover">
+                <div class="portfolio-hover-content">
+                  <i class="fa fa-plus fa-3x"></i>
+                </div>
+              </div>
+              <img class="img-fluid" src="img/top_level/3042.png" alt="">
+            </a>
+            <div class="portfolio-caption">
+              <h4>Materials Project Laboratory (3.042)</h4>
+              <p class="text-muted">Spring 2016</p>
+            </div>
+</div>
+</div>
+
+
+
+
   <div class="row">
+
+
                   <div class="col-md-3 col-sm-6 portfolio-item">
                       <a href="" class="portfolio-link">
                           <div class="portfolio-hover">
@@ -101,6 +164,8 @@
                           <p class="text-muted">I worked in a team of 4 to develop a novel, non-toxic, fast curing sand casting binder.</p>
                       </div>
                   </div>
+
+
 
 
                   <div class="col-md-3 col-sm-6 portfolio-item">
@@ -324,7 +389,36 @@
 
 
 
+    <!-- Portfolio Modals -->
 
+    <!-- Modal 1 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="close-modal" data-dismiss="modal">
+           
+            <div class="lr">
+              <div class="rl"></div>
+            </div>
+          </div>
+
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-8 mx-auto">
+                <div class="modal-body">
+                  <!-- Project Details Go Here -->
+                  <h2 class="text-uppercase">Materials Project Laboratory (3.042)</h2>
+                  <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
+                  <img class="img-fluid d-block mx-auto" src="./Agency - Start Bootstrap Theme_files/01-full.jpg" alt="">
+                  <p>UI worked in a team of 4 to develop a novel, non-toxic, fast curing sand casting binder.</p>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
 
