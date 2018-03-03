@@ -1113,7 +1113,7 @@
 
 <div class="row">
 	<div class="col-sm-8 col-lg-offset-2">
-	    <a href="#" class="code-toggle" role="button" data-alt-text="Hide code" onMouseOver="this.style.color='#111111';this.style.textDecoration='none'"
+	    <a class="code-toggle" role="button" data-alt-text="Hide code" onMouseOver="this.style.color='#111111';this.style.textDecoration='none'"
 	onMouseOut="this.style.color='#111111'">Show STM Controller Code</a>                           
 	        <pre style="text-align:left;"><code class="language-c">
 
@@ -1749,7 +1749,7 @@
 
 <div class="row">
 	<div class="col-sm-10 col-centered">
-                        <a href="#" class="code-toggle" role="button" data-alt-text="Hide code" onMouseOver="this.style.color='#111111';this.style.textDecoration='none'"
+                        <a class="code-toggle" role="button" data-alt-text="Hide code" onMouseOver="this.style.color='#111111';this.style.textDecoration='none'"
                     onMouseOut="this.style.color='#111111'">Show Serial Commands</a>                           
                             <pre style="text-align:left;"><code class="language-c">
 
@@ -1946,7 +1946,7 @@
                 </div>
 <div class="row">
                 <div class="col-sm-10 col-centered">
-                        <a href="#" class="code-toggle" role="button" data-alt-text="Hide code" onMouseOver="this.style.color='#111111';this.style.textDecoration='none'"
+                        <a class="code-toggle" role="button" data-alt-text="Hide code" onMouseOver="this.style.color='#111111';this.style.textDecoration='none'"
                     onMouseOut="this.style.color='#111111'">Show Log Table</a>                           
                             <pre style="text-align:left;"><code class="language-c">
 
@@ -35814,6 +35814,7 @@ namespace STM
   
   <!-- Code block toggle -->
   <script>
+        
           $('.code-toggle').click(function() {
             if(!$(this).data('toggled') || $(this).data('toggled') == 0) {
               $(this).data('org-text', $(this).html());
@@ -35830,6 +35831,7 @@ namespace STM
                 .slideUp();
             }
           }).nextAll('pre').hide();
+
   </script>
 
 
