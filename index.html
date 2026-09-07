@@ -1,355 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Sam's Portfolio</title>
-
-    <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-       <!-- FontAwesome -->
-    <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link href="css/agency.css" rel="stylesheet">
-
-    <link href="css/test.css" rel="stylesheet">
-
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you xiew the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
-
-
-
-
-
-  <body>
-
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-      <div class="container-fluid">
-       <!-- Brand and toggle get grouped for better mobile display -->
-       <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-       <a class="navbar-brand" href="index.html">Samuel Belden</a>
-    </div>
-
-      <!-- Collect the nav links, forms, and other content for toggling -->
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-        <ul class="nav navbar-nav navbar-right">
-          <li class="active"><a href="index.html"><b>Home</b> <span class="sr-only">(current)</span></a></li>
-          
-
-         <li><a href="ProjectsIndex.html"><b>Projects</b></a></li>
-         <li><a href="ActivitiesIndex.html"><b>Activities</b></a></li>
-         <li><a href="ClassIndex.html"><b>Classes</b></a></li>
-         <li><a href="ResumeIndex.html"><b>Resume</b></a></li>
-         <li><a href="OtherIndex.html"><b>Other</b></a></li>
-         <li><a href="ContactIndex.html"><b>Contact</b></a></li>
-
-      </div><!-- /.navbar-collapse -->
-      </div><!-- /.container-fluid -->
-  </nav>
-
-
-
-
-
-<section id="portfolio" class="bg-light-gray">
-  <br><br>
-
-   <div class="container-fluid">
-  <div class="row">
-  <br>
-   <div class="col-md-8 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-    <h1>Welcome</h1>
-      
-      <p class="text-left">
-      My name is <strong>Samuel Belden</strong>, and I am a Process Engineering Manager at SpaceX working on providing high speed, low latency internet to the world with Starlink. I graduated from MIT in 2018 with a Bachelor's Degree in 
-     <font color="orange"> Materials Science and Engineering</font>. Since then I have been involved in a wide range of projects, from reliability testing the solar arrays and battery packs on the Dragon spacecraft, to formulating custom blends of injection molding plastics, printed electronics/inks, and radome coatings and materials for high volume consumer electronics for Starlink, and in the last 3-4 years creating and leading a team to bring up greenfield manufacturing of printed circuit boards (now the largest pcb manufactuer in North America), and solar cell manufacturing (soon to be largest in North America as well) for Starlink, from initial conception, buyoff, and capital procurement (>$1B), through process design, layout, facilities and construction design, install/commissioning, engineering and production org hiring, and process bringup to steady-state, and handover. I specialize in process engineering and in bringing up extremely complex manufacturing processes from scratch, cradle to grave.<br></br> 
-
-      I was also involved in various materials science projects and research in my time at MIT, ranging from lab work to hands-on prototyping and manufacturing. I enjoy hands-on, challenging engineering projects. I've built my own electron microscope that can 'see' atoms, made custom injection molded yo-yo's, designed and built my own carbon fiber bike, and built a variety of 3D printers/cnc machines, along with various other projects. I always have a few things in the works! <br><br>
-       
-       Outside of work, I'm an avid backpacker, camper, hiker, rock climber, canoer, rower, cook, baker, and entrepreneur. Recently I have also been doing more woodworking and stained glass projects as well.<br><br>
-       
-       
-       
-       </p>
-
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Samuel Belden</title>
+  <meta name="description" content="Samuel Belden — process engineering manager at SpaceX (Starlink), MIT materials scientist, and maker of microscopes, bikes, castings, and more.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15140f" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Samuel Belden">
+  <meta property="og:description" content="Samuel Belden — process engineering manager at SpaceX (Starlink), MIT materials scientist, and maker of microscopes, bikes, castings, and more.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<a class="visually-hidden" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html">Samuel Belden</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="index.html" aria-current="page">Home</a></li>
+        <li><a href="ProjectsIndex.html">Projects</a></li>
+        <li><a href="ActivitiesIndex.html">Activities</a></li>
+        <li><a href="ClassIndex.html">Classes</a></li>
+        <li><a href="ResumeIndex.html">Resume</a></li>
+        <li><a href="OtherIndex.html">Other</a></li>
+        <li><a href="ContactIndex.html">Contact</a></li>
+      </ul>
+    </nav>
   </div>
-</div>
-
-</div>
-
-<div class="container-fluid">
-<div class="row">
-<div class="col-md-11 col-lg-11 col-sm-11 col-xs-11 col-md-offset-1 col-lg-offset-1 col-sm-offset-1 col-xs-offset-1">
-<div class="row">
-
-
-     <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 col-md-offset-1 col-lg-offset-1 col-sm-offset-1 col-xs-offset-1  text-center">
-    <img src="img/motorcycle_1.jpg" class="img-rounded img-responsive " alt="Responsive image">
+</header>
+<main id="main">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <p class="eyebrow">Process engineering · Materials science · Making things</p>
+      <h1>Hi, I'm <em>Sam</em>.</h1>
+      <p class="lede">I bring up complex manufacturing processes from scratch — PCBs, solar cells, printed electronics — and spend my free time building things in the shop.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="ProjectsIndex.html">See my projects</a>
+        <a class="btn btn-ghost" href="ContactIndex.html">Get in touch</a>
+      </div>
     </div>
-
-  <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 text-center">
-    <img src="img/face.jpg" class="img-rounded img-responsive " alt="Responsive image">
+    <div class="hero-photo">
+      <img src="img/hero.jpg" alt="Sam Belden at a viewpoint above a Norwegian fjord" width="1448" height="1086">
     </div>
-
-
-
-     <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 text-center">
-    <img src="img/porto_face_2.jpg" class="img-rounded img-responsive " alt="Responsive image">
-    </div>
-
-
-</div>
-</div>
-</div>
-</div>
-
-
-   
-
-
-
-
-<br><br>
-
-<div class="container-fluid">
-<div class="row">
-
-<div class="col-md-11 col-lg-11 col-sm-11 col-xs-11 col-md-offset-1 col-lg-offset-1 col-sm-offset-1 col-xs-offset-1">
-<div class="row">
-
-
-
-<div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 " align="center">
-
- <h4 align="left">Research Focus</h4><ul>
-        <li align="left">Process Engineering</li>
-        <li align="left">Composites</li>
-        <li align="left">Polymers and Adhesives</li>
-        <li align="left">Mechanical Design</li>
-        <li align="left">Additive Manufacturing</li>
-        <li align="left">Electrochemistry</li>
-        <li align="left">Mechanics of Materials</li>
-
-      </ul>
-</div>
-
-<div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 " align="center">
-
- <h4 align="left">Industry Experience</h4><ul>
-        <li align="left">SpaceX - Starlink Engineering Manager (Solar Cell)</li>
-        <li align="left">SpaceX - Starlink Engineering Manager (PCB)</li>
-        <li align="left">Apple - iPhone Product Design Intern</li>
-        <li align="left">CEiiA (Portuguese Aero Company) - Intern</li>
-        <li align="left">Research in EEL Lab</li>
-        <li align="left">Research in Grossman Lab</li>
-      </ul>
-</div>
-
-<div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 " align="center">
-
-        <h4 align="left">Other Interests</h4><ul>
-        <li align="left">Camping/Backpacking/Canoeing</li>
-        <li align="left">Cooking/Baking</li>
-        <li align="left">Travel</li>
-        <li align="left">Rock Climbing</li>
-        <li align="left">Consumer Technology</li>
-      </ul>
-</div>
-
-</div>
-</div>
-</div>
-</div>
-
-
-<div class="container-fluid">
-  <div class="row">
-   <div class="col-md-8 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2">
-      
-      <p class="text-left">
-      <br><br>
-       
-       While at <font color="orange">Apple</font>, I worked primarily on both the AirPower wireless charging mat and the next generation iPhone 8 and 8+. I designed and fabricated several test setups through collaboration with electrical engineering, materials, and product design teams for benchmarking technologies and conducting user experience studies. I extensively used NX CAD, ANSYS mechanical, thermal, and electromagnetic simulation software, and Matlab.<br><br>
-
-       At <font color="orange">CEiiA</font>, I performed market analysis and research on battery managment system (BMS) options for a large 30kg UAV. I designed multiple BMS options in Eagle and had them manufactured and tested. I also performed several carbon fiber layups for another intern's 3-axis gimal design.
-       </p>
-
   </div>
-</div>
-
-</div>
-
-
-<br><br>
-<div class="container-fluid">
-<div class="row">
-  <div class="col-md-11 col-lg-11 col-sm-11 col-xs-11 col-md-offset-1 col-lg-offset-1 col-sm-offset-1 col-xs-offset-1">
-<div class="row">
-
-
-<div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 ">
-
-      <h4>Skills - Computer</h4><ul>
-        <li>Siemens NX and Teamcenter</li>
-        <li>Solidworks</li>
-        <li>ANSYS (Mechanical, Thermal, Electromagnetic)</li>
-        <li>Mastercam</li>
-        <li>PCB Design Software (Altium and Eagle)</li>
-        <li>Matlab</li>
-        <li>Autodesk Revit & Bluebeam</li>
-        </ul>
-</div>
-
-<div class="col-md-3 col-lg-3 col-sm-3 col-xs-3">
-
-        <h4>Skills - Tools</h4><ul>
-        <li>Mechanical Testing - Instron</li>
-        <li>Characterization (FTIR, TGA, DMA/TMA, XRD, SEM/EDS, DSC, STM)</li>
-        <li>Subtractive (Mill, Lathe, Laser Cutter, Waterjet)</li>
-        <li>Additive (FDM, SLA, SLS, Flexo/Gravure/Screen Printing)</li>
-        <li>Composite Design and Layup</li>
-      </ul>
-</div>
-
-<div class="col-md-3 col-lg-3 col-sm-3 col-xs-3">
-
-        <h4>Skills - Electrical</h4><ul>
-        <li>PCB Design and Fabrication</li>
-        <li>Soldering</li>
-        <li>Arduino</li>
-        <li>Oscilliscope</li>
-        <li>Sensors</li>
-
-      </ul>
-</div>
-
-
-
-</div>
-</div>
-
-<!--col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2-->
-
-
-
-
-<div class="container-fluid">
-<div class="row">
-     <div class="col-md-8 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2 text-center">
-<br><br><br>
-  <h4><u>Practical experience in</u></h4> 
-    </div>
-</div>
-</div>
-</div>
-
-<br><br>
-
-<div class="container">
-  <div class="row">
-                  <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3 portfolio-item">
-                      <a href="" class="portfolio-link">
-                          <div class="portfolio-hover">
-                              <div class="portfolio-hover-content">
-                                  <i class="fa fa-plus fa-3x"></i>
-                              </div>
-                          </div>
-                          <img src="img/composite_1.jpg" class="img-responsive" alt="">
-                      </a>
-                      <div class="portfolio-caption">
-                          <h4>Composite Design and Layup</h4>
-                          <p class="text-muted">Have designed and laid up various projects in carbon fiber, fiberglass, and burlap - including motorcycle and racecar fairings, gimbal housings, bike frames and seats, and more</p>
-                      </div>
-                  </div>
-
-                  <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3  portfolio-item">
-                      <a href="" class="portfolio-link">
-                          <div class="portfolio-hover">
-                              <div class="portfolio-hover-content">
-                                  <i class="fa fa-plus fa-3x"></i>
-                              </div>
-                          </div>
-                          <img src="img/top_level/week3_mainImage.jpg" class="img-responsive" alt="">
-                      </a>
-                      <div class="portfolio-caption">
-                          <h4>Product Design</h4>
-                          <p class="text-muted">Proficient in NX, Solidworks, Rhino, various FEA softwares, ANSYS Mechanical, Thermal, and Electromagnetic packages, Eagle, Matlab, and others. Interned on Apple iPhone Product Design Team</p>
-                      </div>
-                  </div>
-
-                     <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3  portfolio-item">
-                      <a href="" class="portfolio-link">
-                          <div class="portfolio-hover">
-                              <div class="portfolio-hover-content">
-                                  <i class="fa fa-plus fa-3x"></i>
-                              </div>
-                          </div>
-                          <img src="img/top_level/yoyo_machining.jpg" class="img-responsive" alt="">
-                      </a>
-                      <div class="portfolio-caption">
-                          <h4>Manufacturing </h4>
-                          <p class="text-muted">Proficient in machining, 3D Printing (SLA, FDM, SLS), composite layup, casting, welding, thermoforming, injection molding, and various roll to roll and printing technologies</p>
-                      </div>
-                  </div>
-
-                   <div class="col-md-3 col-lg-3 col-sm-3 col-xs-3  portfolio-item">
-                      <a href="casting_sand.html" class="portfolio-link">
-                          <div class="portfolio-hover">
-                              <div class="portfolio-hover-content">
-                                  <i class="fa fa-plus fa-3x"></i>
-                              </div>
-                          </div>
-                          <img src="img/top_level/sand_casting.jpg" class="img-responsive" alt="">
-                      </a>
-                      <div class="portfolio-caption">
-                          <h4>Casting, Welding, Metal Treatments</h4>
-                          <p class="text-muted">Worked extensively in MIT Forge casting metals, welding, and testing heat treatments. Took several metallurgy classes to supplement.
-                          </p>
-                      </div>
-                  </div>
-
-
-
-  </div>
-</div>
-
-
-
-
-
-<div class="container-fluid">
-<div class="row">
-<div class="col-md-8 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-2 text-center">
-
-<br><br>
-<p>Please <a href="ContactIndex.html" > email me </a> for the most recent copy of my resume or if you have any questions. Thanks for looking! <br><br><br>
-</p>
-
-</div>
-</div>
-</div>
-</div>
-
-
 </section>
 
+<section class="section">
+  <div class="container">
+    <div class="prose">
+      <h2>About</h2>
+      <p>I'm a Process Engineering Manager at SpaceX, working on providing high-speed, low-latency internet to the world with Starlink. I graduated from MIT in 2018 with a Bachelor's degree in <strong>Materials Science and Engineering</strong>.</p>
+      <p>Since then I've been involved in a wide range of projects: reliability testing the solar arrays and battery packs on the Dragon spacecraft; formulating custom blends of injection-molding plastics, printed electronics and inks, and radome coatings and materials for high-volume consumer electronics; and, over the last several years, creating and leading a team to bring up greenfield manufacturing of printed circuit boards (now the largest PCB manufacturer in North America) and solar cells (soon to be the largest in North America as well) for Starlink — from initial conception, buyoff, and capital procurement (&gt;$1B), through process design, layout, facilities and construction design, install and commissioning, engineering and production org hiring, and process bring-up to steady state and handover.</p>
+      <p>I specialize in process engineering and in bringing extremely complex manufacturing processes up from scratch, cradle to grave.</p>
+      <p>At MIT I worked on a variety of materials science research and prototyping projects, and I've kept building since: I've made my own electron microscope that can "see" atoms, injection-molded custom yo-yos, designed and built a carbon fiber bike, and built a handful of 3D printers and CNC machines. I always have a few things in the works.</p>
+      <p>Outside of work I'm an avid backpacker, camper, hiker, rock climber, canoer, rower, cook, baker, and entrepreneur. Lately I've been doing more woodworking and stained glass.</p>
+    </div>
+  </div>
+</section>
 
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="js/bootstrap.min.js"></script>
-  </body>
+<section class="section">
+  <div class="container">
+    <div class="photo-strip">
+      <figure><img src="img/motorcycle_1.jpg" alt="The MIT Electric Vehicle Team with the electric racing motorcycle" loading="lazy"></figure>
+      <figure><img src="img/porto_face_2.jpg" alt="Sam with colleagues in Portugal" loading="lazy"></figure>
+      <figure><img src="img/composite_1.jpg" alt="Carbon fiber composite layup work" loading="lazy"></figure>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>At a glance</h2>
+    </div>
+    <div class="facts">
+      <div>
+        <h4>Focus areas</h4>
+        <ul>
+          <li>Process engineering</li>
+          <li>Composites</li>
+          <li>Polymers and adhesives</li>
+          <li>Mechanical design</li>
+          <li>Additive manufacturing</li>
+          <li>Electrochemistry</li>
+          <li>Mechanics of materials</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Industry experience</h4>
+        <ul>
+          <li><strong>SpaceX</strong> — Starlink engineering manager, solar cells</li>
+          <li><strong>SpaceX</strong> — Starlink engineering manager, PCB</li>
+          <li><strong>Apple</strong> — iPhone product design intern</li>
+          <li><strong>CEiiA</strong> — engineering intern (Portugal)</li>
+          <li><strong>MIT EEL</strong> — undergraduate research</li>
+          <li><strong>MIT Grossman Group</strong> — undergraduate research</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Other interests</h4>
+        <ul>
+          <li>Camping, backpacking, canoeing</li>
+          <li>Cooking and baking</li>
+          <li>Travel</li>
+          <li>Rock climbing</li>
+          <li>Consumer technology</li>
+          <li>Woodworking and stained glass</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="prose">
+      <h2>Internships</h2>
+      <p>While at <strong>Apple</strong>, I worked primarily on the AirPower wireless charging mat and the next-generation iPhone 8 and 8 Plus. I designed and fabricated several test setups in collaboration with electrical engineering, materials, and product design teams for benchmarking technologies and conducting user experience studies. I extensively used NX CAD, ANSYS mechanical, thermal, and electromagnetic simulation software, and MATLAB.</p>
+      <p>At <strong>CEiiA</strong>, I performed market analysis and research on battery management system (BMS) options for a large 30&nbsp;kg UAV. I designed multiple BMS options in Eagle and had them manufactured and tested. I also performed several carbon fiber layups for another intern's 3-axis gimbal design.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Skills</h2>
+    </div>
+    <div class="facts">
+      <div>
+        <h4>Software</h4>
+        <ul>
+          <li>Siemens NX and Teamcenter</li>
+          <li>SolidWorks</li>
+          <li>ANSYS (mechanical, thermal, electromagnetic)</li>
+          <li>Mastercam</li>
+          <li>PCB design (Altium, Eagle)</li>
+          <li>MATLAB</li>
+          <li>Autodesk Revit and Bluebeam</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Tools and processes</h4>
+        <ul>
+          <li>Mechanical testing (Instron)</li>
+          <li>Characterization: FTIR, TGA, DMA/TMA, XRD, SEM/EDS, DSC, STM</li>
+          <li>Subtractive: mill, lathe, laser cutter, waterjet</li>
+          <li>Additive: FDM, SLA, SLS; flexo, gravure, and screen printing</li>
+          <li>Composite design and layup</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Electrical</h4>
+        <ul>
+          <li>PCB design and fabrication</li>
+          <li>Soldering</li>
+          <li>Arduino and embedded</li>
+          <li>Oscilloscope</li>
+          <li>Sensors</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <h2>Practical experience in</h2>
+    </div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-media"><img src="img/composite_1.jpg" alt="Carbon fiber layup" loading="lazy"></div>
+        <div class="card-body">
+          <h3>Composite design and layup</h3>
+          <p>Designed and laid up projects in carbon fiber, fiberglass, and burlap — motorcycle and racecar fairings, gimbal housings, bike frames and seats, and more.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-media"><img src="img/top_level/week3_mainImage.jpg" alt="3D-printed Voronoi cell night stand" loading="lazy"></div>
+        <div class="card-body">
+          <h3>Product design</h3>
+          <p>Proficient in NX, SolidWorks, Rhino, ANSYS mechanical, thermal, and electromagnetic packages, Eagle, MATLAB, and others. Interned on the Apple iPhone product design team.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-media"><img src="img/top_level/yoyo_machining.jpg" alt="Machining a yo-yo mold" loading="lazy"></div>
+        <div class="card-body">
+          <h3>Manufacturing</h3>
+          <p>Machining, 3D printing (SLA, FDM, SLS), composite layup, casting, welding, thermoforming, injection molding, and roll-to-roll and printing technologies.</p>
+        </div>
+      </div>
+      <a class="card" href="casting_sand.html">
+        <div class="card-media"><img src="img/top_level/sand_casting.jpg" alt="Pouring molten metal into a sand mold" loading="lazy"></div>
+        <div class="card-body">
+          <h3>Casting, welding, metal treatments</h3>
+          <p>Worked extensively in the MIT Forge casting metals, welding, and testing heat treatments, supplemented by several metallurgy classes.</p>
+          <span class="ext">Read about the casting sand project →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact-card">
+      <span class="big">Want a copy of my resume, or have a question?</span>
+      <p class="muted" style="margin:0">Email me at <a href="mailto:sbelden42@gmail.com">sbelden42@gmail.com</a> — thanks for looking!</p>
+    </div>
+  </div>
+</section>
+
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; 2026 Samuel Belden</span>
+    <span><a href="mailto:sbelden42@gmail.com">sbelden42@gmail.com</a> &nbsp;&middot;&nbsp; <a href="ResumeIndex.html">Resume</a> &nbsp;&middot;&nbsp; <a href="ProjectsIndex.html">Projects</a></span>
+  </div>
+</footer>
+<script src="js/site.js" defer></script>
+</body>
 </html>
