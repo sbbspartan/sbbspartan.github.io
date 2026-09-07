@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=4">
+  <link rel="stylesheet" href="css/site.css?v=5">
   <link rel="stylesheet" href="css/prism.css">
 </head>
 <body>
@@ -134,67 +134,32 @@
 <p>This is an important parameter, and it does vary with temperature. The higher the temperature, the more the expansion or contraction. It doesn't vary much for PZT-5A, though: About 11% from 0-100 deg. Celsius, vs. over 30% for PZT-5H.</p>
 <p>d<sub>3,1</sub> is an approximation.</p>
 <p>In the case of my STM, I will be utilizing cheaper piezoelectric disks instead of the more expensive piezoelectric tubes. They are much cheaper, but don't has as much precision as the tubes, and tend to be more vibration sensitive. Speaker piezoelectric disks were bought and an exacto knife was used to but them into 4 quadrants for the x, y, and z movements.</p>
-<p>Bootstrap Core CSS 
-                    <strong>Z Movement: Driver Voltages and Calculation of Position</strong><br><br>
-
-                    The Z direction is the up-down movement of the tip.
-                    Tube movement up and down is calculated using the formula:<br><br>
-
-                    Delta_L = d3,1 * V * L / t<br><br>
-
-                    where Delta_L is angstroms, d3,1 is -1.73 angstroms/volt for PZT-5A material, V=Voltage, L=Tube Length in mm, and t=wall thickness in mm.<br><br>
-
-                    This is the formula that you can use to calculate your total Z range (just plug in your total voltage range) and Z position from recorded Z voltages. Actual movement of the tube can vary from this calculated value up to plus or minus 20%, and can vary with temperature, tube age, etc. This is why a Look Up Table may be used to correct the image after scan, or (preferable) correct the scanning waveform to achieve an undistorted scan. Generally, this error increases with increasing driver voltages. It appears to be very small for voltages under 20.<br><br>
-
-                    Note that the Z movement range for piezo tubes depends on only two things: How long your tube is, and how thick the walls are. The thinner the walls, the more the range. It doesn't depend on the radius of the tube. As an example, assuming a tube thickness of 0.022 inch (0.5588 mm), a tube length of 0.5 inch (12.7 mm) and using the formula just given, Delta_L is about -39 angstroms for +1 volt, and -707 angstroms for for +18 volts, or 1414 angstroms (141 nanometers) for +18V to -18V. This would be the movement of the z-tip if a -18 to +18 volt voltage ramp were applied to the inner tube, and represents the Z range. The negative sign of d3,1 means that the tube would contract when a positive voltage is applied.<br><br>
-
-                    Z-positioning in the scanning, mode, uses a +- voltage range to vary the tip position to keep the tip within an angstrom or two of the sample surface, via feedback maintenance of a constant tunnelling current.<br><br>
-
-                    <strong>X, Y Movement: Driver Voltages and Calculation of Position</strong><br><br>
-
-                    For x-y positioning in the fine mode, the scanning tube moves in the x and y directions. In the fine mode, a scanning area of about 2500 angstroms by 2500 angstroms (250nm x 250nm) is achieved with +-18 volts, with our example tube. This calculation is reviewed below.<br><br>
-
-                    Calculation of x and y movement/volt is based on the following, assuming: 
-                    equal and opposite voltages applied to opposite quadrants,
-                    and using the following formula for delta x,y for tubes with OD quadrant electrodes:<br><br>
-
-                    Delta_x = 0.90 * d3,1 * Vx *( L)2 / DT<br><br>
-                    Delta_y = 0.90 * d3,1 * Vy * (L)2 / DT<br><br>
-
-                    where Vx or Vy = applied voltage across one quadrant, L = tube length in mm(or cm), D=tube diameter at midpoint in wall thickness T= wall thickness in mm (or cm).<br><br>
-
-                    Note that as both the tube diameter and wall thickness get smaller, the X,Y range increases linearly, and as length increases, range increases as the square. Long, narrow tubes with thin walls have better X,Y range.<br><br>
-
-                    Assuming a tube diameter of 0.25 inches or 6.35mm,<br><br>
-
-                    =0.90*(-1.73Ang/V)*1 volt*(12.7mm)2/6.35mm x 0.56mm)<br><br>
-                    =-71 angstroms of movement/volt<br><br>
-
-                    For one angstrom change in the X and Y direction, a voltage change of +1volt/-71 angstroms movement=0.014 volt/angstrom would be required.<br><br>
-
-                    =71 Ang/volt times 36 volts total plus/minus range<br><br>
-                    =2556 Angstroms lateral (X,Y) range, or 255nm.<br><br>
-
-                    The Y sawtooth slowly increases from min to max either smoothly or ratcheting up one increment at the end of each scan line. Actually, there'd be two equal and opposite sawtooth waves, one from zero to +18 volts on one electrode quadrant, and one from zero to -18 volts on the opposite quadrant, while many triangle waves occur for X scanning. There is slow Y movement during X scanning, under the smooth waveform scheme, so the actual scan path is a kind of compact "Z" pattern back and forth across the sample rather than a rectangular raster pattern. Alternatively, the Y movement could be incremented by software at the end of each scan line, forming a regular raster pattern.<br><br>
-
-                    Actually, according to Chen, for the X scanning waveform it would be better to use a sine wave to avoid abrupt stops and starts to the X-Y piezo tube. This would make plotting the data somewhat more complicated, however.<br><br>
-
-                    Each display point sampled would contain the analog Z position, so we would need at a minimum a single 16 bit (preferably) analog-to-digital convertor (ADC).<br><br>
-
-                    <strong>Piezoelectric Nonlinearities and Scanning Error Correction</strong><br><br>
-
-                    There are two major sources of error, or non-linearity in using a piezoelectric ceramic tube to scan.<br><br>
-
-                    1. Hysteresis: This is the intrinsic non-linearity of the molecular dipoles in the ceramic tube. As the deflection of the tube increases, it takes more voltage than a linear increase of the initial deflection voltages. This effect, as mentioned, increases with voltage and deflection. Additionally, the return path (X-) of the scanner deviates from the extension path (X+). For this reason, although most commercial scanners permit data gathering on both X- and X+ legs, they are normally not integrated into a single image. Rather they are stored as two separate images. A homebrew STM scanner should be capable of acquiring data from either the X- or X+ leg, since image quality could be better in one direction, but it would probably be sufficient to be able to designate before the scan which direction to acquire data on.<br><br>
-
-                    2. Creep: After a driving voltage is applied to a scanner, the tube will move most of the way there quickly, then, over the next minute or two, will move an additional 5% or so in the direction of the original movement. This will interfere with the scan, of course. One way around this is to integrate a capacitor into the drive electronics which slowly discharges against this trend, keeping the tube more or less stationary.<br><br>
-
-                    You can determine X and Y position by either:<br><br>
-
-                    1. Measuring X and Y driver voltages (normally used), or<br><br>
-                    2. Recording the commanded X and Y driver voltages<br><br>
-
-                    Due to the two errors mentioned above, an uncorrected scan results in a distorted image. An error correcting scheme for the driver voltages may be employed to ensure accurate tip positioning and straight scanning. This would take the form, normally, of a look-up-table (LUT) of modified drive voltages. There would have to be a different LUT for each scan size and speed.</p>
+<h4>Z movement: driver voltages and calculation of position</h4>
+<p>The Z direction is the up-down movement of the tip. Tube movement up and down is calculated using the formula:</p>
+<p class="eq">ΔL = d<sub>3,1</sub> · V · L / t</p>
+<p>where ΔL is in angstroms, d<sub>3,1</sub> is −1.73 angstroms/volt for PZT-5A material, V = voltage, L = tube length in mm, and t = wall thickness in mm.</p>
+<p>This is the formula that you can use to calculate your total Z range (just plug in your total voltage range) and Z position from recorded Z voltages. Actual movement of the tube can vary from this calculated value up to plus or minus 20%, and can vary with temperature, tube age, etc. This is why a look-up table may be used to correct the image after scan, or (preferably) correct the scanning waveform to achieve an undistorted scan. Generally, this error increases with increasing driver voltages. It appears to be very small for voltages under 20.</p>
+<p>Note that the Z movement range for piezo tubes depends on only two things: how long your tube is, and how thick the walls are. The thinner the walls, the more the range. It doesn't depend on the radius of the tube. As an example, assuming a tube thickness of 0.022 inch (0.5588 mm), a tube length of 0.5 inch (12.7 mm), and using the formula just given, ΔL is about −39 angstroms for +1 volt, and −707 angstroms for +18 volts, or 1414 angstroms (141 nanometers) for +18 V to −18 V. This would be the movement of the Z tip if a −18 to +18 volt ramp were applied to the inner tube, and represents the Z range. The negative sign of d<sub>3,1</sub> means that the tube contracts when a positive voltage is applied.</p>
+<p>Z-positioning in scanning mode uses a ± voltage range to vary the tip position to keep the tip within an angstrom or two of the sample surface, via feedback maintenance of a constant tunneling current.</p>
+<h4>X, Y movement: driver voltages and calculation of position</h4>
+<p>For X-Y positioning in the fine mode, the scanning tube moves in the X and Y directions. In the fine mode, a scanning area of about 2500 by 2500 angstroms (250 nm × 250 nm) is achieved with ±18 volts, with our example tube. This calculation is reviewed below.</p>
+<p>Calculation of X and Y movement per volt is based on the following, assuming equal and opposite voltages applied to opposite quadrants, and using the following formula for Δx, Δy for tubes with OD quadrant electrodes:</p>
+<p class="eq">Δx = 0.90 · d<sub>3,1</sub> · V<sub>x</sub> · L<sup>2</sup> / (D · T)</p>
+<p class="eq">Δy = 0.90 · d<sub>3,1</sub> · V<sub>y</sub> · L<sup>2</sup> / (D · T)</p>
+<p>where V<sub>x</sub> or V<sub>y</sub> = applied voltage across one quadrant, L = tube length in mm (or cm), D = tube diameter at the midpoint of the wall thickness, and T = wall thickness in mm (or cm).</p>
+<p>Note that as both the tube diameter and wall thickness get smaller, the X,Y range increases linearly, and as length increases, range increases as the square. Long, narrow tubes with thin walls have better X,Y range.</p>
+<p>Assuming a tube diameter of 0.25 inches (6.35 mm):</p>
+<p class="eq">Δx = 0.90 · (−1.73 Å/V) · 1 V · (12.7 mm)<sup>2</sup> / (6.35 mm · 0.56 mm) ≈ −71 Å per volt</p>
+<p>For one angstrom of change in the X and Y direction, a voltage change of 1 V / 71 Å ≈ 0.014 V per angstrom would be required. Over the full ±18 V (36 V) range that is 71 Å/V × 36 V ≈ 2556 angstroms of lateral (X,Y) range, or about 255 nm.</p>
+<p>The Y sawtooth slowly increases from min to max, either smoothly or ratcheting up one increment at the end of each scan line. Actually there would be two equal and opposite sawtooth waves — one from zero to +18 V on one electrode quadrant and one from zero to −18 V on the opposite quadrant — while many triangle waves occur for X scanning. There is slow Y movement during X scanning under the smooth waveform scheme, so the actual scan path is a kind of compact "Z" pattern back and forth across the sample rather than a rectangular raster pattern. Alternatively, the Y movement could be incremented by software at the end of each scan line, forming a regular raster pattern.</p>
+<p>According to Chen, for the X scanning waveform it would be better to use a sine wave to avoid abrupt stops and starts of the X-Y piezo tube. This would make plotting the data somewhat more complicated, however.</p>
+<p>Each display point sampled would contain the analog Z position, so we would need at a minimum a single 16-bit (preferably) analog-to-digital converter (ADC).</p>
+<h4>Piezoelectric nonlinearities and scanning error correction</h4>
+<p>There are two major sources of error, or non-linearity, in using a piezoelectric ceramic tube to scan.</p>
+<p><strong>1. Hysteresis.</strong> This is the intrinsic non-linearity of the molecular dipoles in the ceramic tube. As the deflection of the tube increases, it takes more voltage than a linear increase of the initial deflection voltages. This effect increases with voltage and deflection. Additionally, the return path (X−) of the scanner deviates from the extension path (X+). For this reason, although most commercial scanners permit data gathering on both X− and X+ legs, they are normally not integrated into a single image; rather, they are stored as two separate images. A homebrew STM scanner should be capable of acquiring data from either the X− or X+ leg, since image quality could be better in one direction, but it would probably be sufficient to be able to designate before the scan which direction to acquire data on.</p>
+<p><strong>2. Creep.</strong> After a driving voltage is applied to a scanner, the tube will move most of the way there quickly, then, over the next minute or two, will move an additional 5% or so in the direction of the original movement. This will interfere with the scan, of course. One way around this is to integrate a capacitor into the drive electronics which slowly discharges against this trend, keeping the tube more or less stationary.</p>
+<p>You can determine X and Y position by either measuring the X and Y driver voltages (normally used), or recording the commanded X and Y driver voltages.</p>
+<p>Due to the two errors mentioned above, an uncorrected scan results in a distorted image. An error-correcting scheme for the driver voltages may be employed to ensure accurate tip positioning and straight scanning. This would normally take the form of a look-up table (LUT) of modified drive voltages, and there would have to be a different LUT for each scan size and speed.</p>
 <h3 id="5">Current Measurement Theory (Transimpedance Amp)</h3>
 <p>The most common approach to amplifying the tunneling current is to use something called a transimpedance amplifier [TIA]. This is basically a current-to-voltage converter, most commonly implemented via an op-amp circuit. The TIA can be used to amplify the current output of many different machines, including photo detectors, accelerometers, and a huge variety of sensors.</p>
 <p><a href="https://en.wikipedia.org/wiki/Transimpedance_amplifier"></a></p>
