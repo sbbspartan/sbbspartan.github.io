@@ -235,6 +235,8 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .gallery img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3; transition: transform .3s ease; }
 .gallery.cols-1 img, .gallery.contain img { width: auto; max-width: 100%; margin-inline: auto; aspect-ratio: auto; object-fit: contain; max-height: 75vh; }
 .gallery.cols-1 figure { background: none; }
+.gallery figure.plate { background: #fff; padding: .75rem 1rem; }      /* transparent equation GIFs need a light plate in dark mode */
+.gallery figure.plate img { margin-inline: auto; }
 .gallery a:hover img { transform: scale(1.02); }
 
 .embed { position: relative; aspect-ratio: 16 / 10; margin: 1.5rem auto 2rem; border-radius: var(--radius); overflow: hidden; background: var(--bg-muted); border: 1px solid var(--line); }
