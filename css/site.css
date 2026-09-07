@@ -215,7 +215,8 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .article { padding-bottom: 3rem; overflow-wrap: anywhere; }
 .article pre { overflow-wrap: normal; }
 .article > * { max-width: var(--measure); margin-inline: auto; }
-.article > h2 { margin-top: 2.5rem; padding-top: .5rem; }
+.article > h2 { margin-top: 2.5rem; padding-top: .5rem; text-align: center; }
+.article > h3 { text-align: center; }
 .article > h3 { margin-top: 1.8rem; }
 .article > h2:first-child { margin-top: 0; }
 .article .caption, .article figcaption { color: var(--fg-muted); font-size: .92rem; font-style: italic; text-align: center; margin: -0.5rem auto 1.75rem; }

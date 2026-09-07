@@ -55,7 +55,6 @@
 <p class="caption">Above: The overarching schematic of an STM. A piezoectric disk (or tube) is used to lower an atomically fine electrode tip (tungsten) to within a few nanometers of the surface of the sample material. When a bias voltage is applied to the sample, electrons will quantum tunnel from the electrode tip to the sample material. A tunneling current amplifer then reads this current and sends it back to the control electronics. The scan head scrolls over the surface of the sample, measuring the current, and reading the data over serial into the computer to display the image and perform PI control over the scanner.</p>
 <nav class="toc" aria-label="Contents"><h4>Contents</h4><ul class="toc_list">
 <li><a href="#1">1: General STM Project Overview</a></li>
-<li><a href="#25">2: Current STM Status</a></li>
 <li><a href="#2">3: Theory of STM Operation</a></li>
 <ul><li><a href="#3">3.1: Tunneling Theory</a>
 <li><a href="#4">3.2: Piezoelectric Tube/Disk Theory</a></li>
@@ -80,21 +79,9 @@
 <li><a href="#23">7: Bill of Materials</a></li>
 <li><a href="#24">8: Additional Links and Resources</a></li></ul></nav>
 <h2 id="1">General STM Project Overview</h2>
-<p>The general idea is to build an STM (scanneling tunneling electron microscope) that has the ability to see (at a minimum) individual carbon atoms in a graphite lattice. There have been a few people that have done this and posted their machine images and general ideas/process online, but not too many. I'd like to continue where they left off, and really document this build very well so that other people can follow in my footsteps easily. The machine makes use of pretty cheap materials (using a piezoelectric disk instead of a piezoelectric tube, tungsten wire instead of platinum wire, manual calibration of z-axis instead of stepper motor calibraton, etc.), but should still be funcitonal, and for a lot less money (on the order of $200-$300). The goal is to replicate their work and document the process in extreme detail, well hopefully being able to achieve atomic resolution on some HOPG (highly oriented pyrolitic graphite) such as seen in the picture below.</p>
+<p>The general idea is to build an STM (scanneling tunneling electron microscope) that has the ability to see (at a minimum) individual carbon atoms in a graphite lattice. There have been a few people that have done this and posted their machine images and general ideas/process online, but not too many. I'd like to continue where they left off, and really document this build very well so that other people can follow in my footsteps easily. The machine makes use of pretty cheap materials (using a piezoelectric disk instead of a piezoelectric tube, tungsten wire instead of platinum wire, manual calibration of z-axis instead of stepper motor calibraton, etc.), but should still be functional, and for a lot less money (on the order of $200-$300). The goal is to replicate their work and document the process in extreme detail, while hopefully being able to achieve atomic resolution on some HOPG (highly oriented pyrolitic graphite) such as seen in the picture below.</p>
 <h3>Scan</h3>
 <div class="gallery cols-1"><figure><a href="img/portfolio/final_project/final_16.png"><img src="img/portfolio/final_project/final_16.png" alt="Building a Desktop Scanning Tunneling Microscope — photo 1" loading="lazy"></a></figure></div>
-<h2 id="25">Current Status of STM</h2>
-<p>1) <strong>What does it do?</strong> <br/>
-                    2) <strong>Who's done it beforehand?</strong> <br/>
-                    3) <strong>What did I design?</strong> <br/>
-                    4) <strong>What materials and components were used?</strong><br/>
-                    5) <strong>Where did they come from?</strong> <br/>
-                    6) <strong>How much did they cost?</strong> <br/>
-                    7) <strong>What parts and systems were made?</strong> <br/>
-                    8) <strong>What processes were used?</strong><br/>
-                    9) <strong>What questions were answered?</strong> <br/>
-                    10) <strong>How was it evaluated?</strong> <br/>
-                    11) <strong>What are the implications?</strong></p>
 <h2 id="2">Theory of STM Operation</h2>
 <p>The actual in-depth theory of the STM is quite complex, so I will only provide a relatively surface level overview here. I will put some of the more in-depth papers on the theory of Scanning Tunneling Microscopy in the "Additional Resources and Links" section at the end of this site.</p>
 <p>In general, a piezoectric disk (or tube) is used to lower an atomically fine electrode tip (tungsten) to within 5-10 Angstroms (0.5-1.0nm) of the surface of the sample material. When a bias voltage is applied to the sample, electrons will quantum tunnel from the electrode tip to the sample materiial. A tunneling current amplifer then reads this current and sends it back to the control electronics. The scan head scrolls over the surface of the sample, measuring the current, and reading the data over serial into the computer to display the image and perform PI control over the scanner. I will cover this all in more depth below.</p>
