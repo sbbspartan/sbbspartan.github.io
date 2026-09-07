@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=3">
+  <link rel="stylesheet" href="css/site.css?v=4">
   <link rel="stylesheet" href="css/prism.css">
 </head>
 <body>
@@ -97,8 +97,8 @@
 <div class="gallery cols-1"><figure class="plate"><a href="img/portfolio/final_project/final_31.gif"><img src="img/portfolio/final_project/final_31.gif" alt="Building a Desktop Scanning Tunneling Microscope — photo 1" loading="lazy"></a></figure></div>
 <p>In STM (scanning tunneling microscopy), a bias voltage is applied to the sample such that the tunneling current is caused from the reduced barrier height. This barrier height can be approximated by the average workfunction of the sample and tip materials. The workfuntion of a material is essentially the energy required to fully strip an electron from the surface of that material and place it into vacuum. The work function is different for the surface and bulk of a material, but we are only concerned about the surface here. The work functions for materials have already been worked out experimentally and can be found online.</p>
 <p>The critical parameter in this solution is k. One finds that:</p>
-<p>k = sqrt[2m(phi - E)/(h2)]</p>
-<p>where, phi represents the barrier potential, E is the energy of the particular state, and h corresponds to the reduced Planck constant. In order to simplify the model, phi can be substituted by its average value across the potential barrier; however, generally, phi would not be constant. With this simplification, the system then becomes a rectangular potential barrier, which is actually quite easy to solve. 
+<p class="eq">κ = <span class="sqrt">√<span class="rad">2m(Φ − E)</span></span> / ħ</p>
+<p>where Φ represents the barrier potential, E is the energy of the particular state, and ħ is the reduced Planck constant. In order to simplify the model, Φ can be substituted by its average value across the potential barrier; however, generally, Φ would not be constant. With this simplification, the system then becomes a rectangular potential barrier, which is actually quite easy to solve. 
 
                     When the bias voltage is much smaller than the workfunction, the inverse decay length of the electrons can be further simplifed to:</p>
 <div class="gallery cols-1"><figure class="plate"><a href="img/portfolio/final_project/final_33.gif"><img src="img/portfolio/final_project/final_33.gif" alt="Building a Desktop Scanning Tunneling Microscope — photo 1" loading="lazy"></a></figure></div>
@@ -121,17 +121,18 @@
 <p>Motion of the tube in the Z direction is obtained by applying a voltage to all outside electrodes uniformly. A positive voltage causes a uniform contraction of the tube. A negative voltage causes an expansion. Important Note: Do not try to get increased range by applying an equal and opposite voltage to the inner electrode. This will tend to depolarize the piezo tube. The inner electrode should always be grounded, or at the negative pole, i.e., if your range is +-18 volts, the inner electrode should be held at a steady -18 volts.</p>
 <div class="gallery cols-1"><figure><a href="img/portfolio/final_project/final_40.PNG"><img src="img/portfolio/final_project/final_40.PNG" alt="Building a Desktop Scanning Tunneling Microscope — photo 1" loading="lazy"></a></figure></div>
 <p>Crystallographic conventions are used to describe the orientation of a poled piezoceramic and to characterize the performance parameters of the various piezoceramic meterials. The specific type of performance we are concerned with in a STM is:</p>
-<p>da,b where:</p>
-<p>d=Displacement, or the ratio of mechanical strain developed to electrical field applied, expressed as 10-12 meters/V, or angstroms/volt.</p>
-<p>a=Electrode orientation</p>
-<p>b=Direction of induced strain</p>
-<p>For a, the only value, for our application is:</p>
-<p>3=the dimension from the positive to the negative electrode. In a tube piezoceramic, this is normally the thickness of the tube, as the electrodes normally coat the interior and exterior of the tube.</p>
-<p>For b, the only value for our application is:</p>
-<p>1=The direction of induced strain (movement) along the tube's length.</p>
-<p>d3,1 is the "piezoelectric coefficient" which, when you plug it into the Delta_L formula (below), tells you how much the tube will shorten (due to the negative sign) when a positive voltage is applied. D3,1 = -1.73 angstroms/volt for PZT-5A type ceramic at 293 degrees Kelvin. It characterizes tube length changes with voltage.</p>
+<p class="eq">d<sub>a,b</sub></p>
+<p>where:</p>
+<p><em>d</em> = displacement, or the ratio of mechanical strain developed to electrical field applied, expressed as 10<sup>−12</sup> meters/V, or angstroms/volt.</p>
+<p><em>a</em> = electrode orientation</p>
+<p><em>b</em> = direction of induced strain</p>
+<p>For <em>a</em>, the only value for our application is:</p>
+<p>3 = the dimension from the positive to the negative electrode. In a tube piezoceramic, this is normally the thickness of the tube, as the electrodes normally coat the interior and exterior of the tube.</p>
+<p>For <em>b</em>, the only value for our application is:</p>
+<p>1 = the direction of induced strain (movement) along the tube's length.</p>
+<p>d<sub>3,1</sub> is the "piezoelectric coefficient" which, when you plug it into the ΔL formula, tells you how much the tube will shorten (due to the negative sign) when a positive voltage is applied. d<sub>3,1</sub> = −1.73 angstroms/volt for PZT-5A type ceramic at 293 degrees Kelvin. It characterizes tube length changes with voltage.</p>
 <p>This is an important parameter, and it does vary with temperature. The higher the temperature, the more the expansion or contraction. It doesn't vary much for PZT-5A, though: About 11% from 0-100 deg. Celsius, vs. over 30% for PZT-5H.</p>
-<p>D3,1 is an approximation.</p>
+<p>d<sub>3,1</sub> is an approximation.</p>
 <p>In the case of my STM, I will be utilizing cheaper piezoelectric disks instead of the more expensive piezoelectric tubes. They are much cheaper, but don't has as much precision as the tubes, and tend to be more vibration sensitive. Speaker piezoelectric disks were bought and an exacto knife was used to but them into 4 quadrants for the x, y, and z movements.</p>
 <p>Bootstrap Core CSS 
                     <strong>Z Movement: Driver Voltages and Calculation of Position</strong><br><br>
@@ -197,7 +198,7 @@
 <h3 id="5">Current Measurement Theory (Transimpedance Amp)</h3>
 <p>The most common approach to amplifying the tunneling current is to use something called a transimpedance amplifier [TIA]. This is basically a current-to-voltage converter, most commonly implemented via an op-amp circuit. The TIA can be used to amplify the current output of many different machines, including photo detectors, accelerometers, and a huge variety of sensors.</p>
 <p><a href="https://en.wikipedia.org/wiki/Transimpedance_amplifier"></a></p>
-<div class="gallery cols-1"><figure><a href="img/portfolio/final_project/final_41.png"><img src="img/portfolio/final_project/final_41.png" alt="Building a Desktop Scanning Tunneling Microscope — photo 1" loading="lazy"></a></figure></div>
+<div class="gallery cols-1"><figure class="plate"><a href="img/portfolio/final_project/final_41.png"><img src="img/portfolio/final_project/final_41.png" alt="Building a Desktop Scanning Tunneling Microscope — photo 1" loading="lazy"></a></figure></div>
 <p>In this case, I will be using this making this TIA with a special op-amp that has an ultra low input bias current, and using a 100M Ohm feedback resistor to get amplification on the order of 100,000,000. This means a current of 1nA-10nA will read as a voltage of 100mV to 1V, easily readable by a microchip's ADC. However, when using an op-amp with a relatively high input bias current (on the order of the tunneling current - 1nA), that current will also get summed up/amplified, leading to huge errors in the current measurement. I will be using the ADA4530 for this current amplifier circuit, as the ADA4530 has a guaranteed input bias current of only 20fA at room temperature! The designs for this can be seen in the electronics section below, but of special note is the guard ring I implemented around the current input node to reduce unwanted voltage and current noise - the guard ring is held at ground to absorb the noise. Finally, even though the set point for this scope will be around 1nA of current, it is important to have some extra range in order to not damage the preAmp circuit. With the ADA4530 and a 100M Ohm resistor, I can measure up to around 100nA of current before the circuit is overwhelmed.</p>
 <h3 id="6">Noise Damping Theory</h3>
 <p>Noise tends to be the primary issue with building homemade STMs, as evidenced by many other makers' problems and advice. There is a multitude of vibrational frequencies that can disrupt the device (from lower frequencies such as building and ground vibrations to higher frequencies from nearby movement and even accoustic vibrations from sound waves such as people talking). These all need to be protected against. The primary sources of noise in the STM are normal vibrations, accoustic vibrations and electromagnetic interference. These are taken care of in my STM through the following means:</p>

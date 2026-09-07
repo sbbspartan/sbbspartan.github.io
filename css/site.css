@@ -237,6 +237,11 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .gallery.cols-1 figure { background: none; }
 .gallery figure.plate { background: #fff; padding: .75rem 1rem; }      /* transparent equation GIFs need a light plate in dark mode */
 .gallery figure.plate img { margin-inline: auto; }
+/* Inline (text) equations */
+.article .eq { text-align: center; font-family: var(--font-display); font-size: 1.3rem; margin: .25rem auto 1.4rem; }
+.eq .sqrt .rad { border-top: 1.5px solid currentColor; padding: .05em .15em 0; margin-left: .05em; }
+.eq sub, .article sub { font-size: .7em; vertical-align: -.25em; line-height: 0; }
+
 .gallery a:hover img { transform: scale(1.02); }
 
 .embed { position: relative; aspect-ratio: 16 / 10; margin: 1.5rem auto 2rem; border-radius: var(--radius); overflow: hidden; background: var(--bg-muted); border: 1px solid var(--line); }
