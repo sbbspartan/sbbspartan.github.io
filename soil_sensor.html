@@ -15,7 +15,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/site.css?v=6">
+  <link rel="stylesheet" href="css/site.css?v=7">
   <link rel="stylesheet" href="css/prism.css">
 </head>
 <body>
@@ -58,7 +58,7 @@
 <p class="caption">The Grafana dashboard: soil moisture (%) and soil temperature (°C), one point every five minutes. <a href="https://sbelden42.grafana.net/public-dashboards/c1af7c5465544f26a20e37ba9e41f967" rel="noopener">Live version</a>.</p>
 
 <h2>Hardware</h2>
-<p>The probe is a generic sealed RS485 soil moisture and temperature sensor that speaks Modbus RTU at 4800 baud. It exposes two holding registers — moisture and temperature, each scaled by 10 — so a single Modbus read returns both values. The ESP32 talks to it through an RS485 transceiver on UART2 (GPIO 16/17), with GPIO 4 driving the transceiver's DE/RE pin to switch between transmit and receive around each request. The <code>ModbusMaster</code> library handles the framing; the two <code>preTransmission</code>/<code>postTransmission</code> callbacks in the sketch just toggle that direction pin.</p>
+<p>The probe is a generic sealed RS485 soil moisture and temperature sensor that speaks Modbus RTU at 4800 baud. It exposes two holding registers — moisture and temperature, each scaled by 10 — so a single Modbus read returns both values. The ESP32 talks to it through a MAX13487-based RS485-to-TTL board on UART2 (GPIO 16/17), with GPIO 4 driving the DE/RE pin to switch between transmit and receive around each request, and a bidirectional logic level converter between the 3.3 V ESP32 and the 5 V RS485 board. The <code>ModbusMaster</code> library handles the framing; the two <code>preTransmission</code>/<code>postTransmission</code> callbacks in the sketch just toggle that direction pin.</p>
 
 <h2>Logging to InfluxDB</h2>
 <p>InfluxDB's Arduino client (<code>InfluxDbClient</code>) does most of the work. On boot the ESP32 joins WiFi, syncs its clock over NTP (the InfluxDB Cloud TLS certificate can't be validated without correct time), and checks the connection to the bucket. Each reading is a single <code>Point</code> in the <code>soilSensor</code> measurement with two tags — the device type and the WiFi SSID — and two fields, <code>Soil Moisture</code> and <code>Soil Temperature</code>. The point is serialized to InfluxDB line protocol and written with one HTTPS call, then the loop sleeps for five minutes. That cadence is plenty for soil, and keeps the write volume comfortably inside the free tier.</p>
@@ -204,6 +204,14 @@ void setup() {
   delay(300000);
   }</code></pre></details>
 
+<h2>Parts and references</h2>
+<ul>
+  <li><a href="https://www.aliexpress.us/item/3256801338530820.html" rel="noopener">RS485 Modbus soil moisture / temperature sensor (model TS-S)</a> — AliExpress</li>
+  <li><a href="https://www.amazon.com/dp/B08D5ZD528" rel="noopener">ESP-WROOM-32 ESP32 development board</a> — Amazon</li>
+  <li><a href="https://www.amazon.com/dp/B0B9XT9HM8" rel="noopener">RS485-to-TTL board (MAX13487)</a> — Amazon</li>
+  <li><a href="https://www.aliexpress.us/item/3256805798457379.html" rel="noopener">4-channel bidirectional 3.3 V ↔ 5 V logic level converter</a> — AliExpress</li>
+  <li><a href="https://youtu.be/tDR09WTAcpA" rel="noopener">Video walkthrough of this style of soil sensor and its RS485 / Modbus register map</a> — YouTube; a good reference for the wiring and the holding-register layout the sketch reads.</li>
+</ul>
 <h2>Next steps</h2>
 <p>Battery power with deep sleep between readings, a second probe or two on the same RS485 bus (each with its own Modbus address), and a Grafana alert when moisture drops below a threshold.</p>
 </article>

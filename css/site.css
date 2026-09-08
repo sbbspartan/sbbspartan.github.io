@@ -221,7 +221,7 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .article > h3 { margin-top: 1.8rem; }
 .article > h2:first-child { margin-top: 0; }
 .article .caption, .article figcaption { color: var(--fg-muted); font-size: .92rem; font-style: italic; text-align: center; margin: -0.5rem auto 1.75rem; }
-.article > .gallery, .article > .embed, .article > .hero-figure, .article > pre, .article > details, .article > .code-block { max-width: min(100%, 960px); }
+.article > .gallery, .article > .embed, .article > .hero-figure { max-width: min(100%, 960px); }
 .article > .gallery { margin-block: 1.25rem 1.75rem; }
 
 .hero-figure { margin: 0 auto 2rem; }
