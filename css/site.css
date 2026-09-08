@@ -196,6 +196,8 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-co
 .card-media { aspect-ratio: 4 / 3; background: var(--bg-muted); overflow: hidden; }
 .card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
 a.card:hover .card-media img { transform: scale(1.03); }
+.card-media.contain { background: #181b1f; }
+.card-media.contain img { object-fit: contain; }
 .card-media.placeholder { display: grid; place-items: center; color: var(--fg-faint); font-family: var(--font-display); font-size: 2.2rem; aspect-ratio: 4 / 2.2; }
 .card-body { padding: 1rem 1.1rem 1.2rem; display: flex; flex-direction: column; gap: .35rem; }
 .card-body h3 { font-size: 1.15rem; margin: 0; }
