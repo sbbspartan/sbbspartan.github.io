@@ -214,6 +214,7 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .article-header .back:hover { color: var(--accent); }
 .article { padding-bottom: 3rem; overflow-wrap: anywhere; --measure: 41rem; }  /* fixed width so code blocks share the text column edges */
 .article pre { overflow-wrap: normal; }
+.article > pre, .article > pre[class*="language-"] { margin: 1rem auto 1.5rem; }  /* beat prism.css, which resets pre margins */
 .article > * { max-width: var(--measure); margin-inline: auto; }
 .article > h2 { margin-top: 2.5rem; padding-top: .5rem; text-align: center; }
 .article > h3 { text-align: center; }
