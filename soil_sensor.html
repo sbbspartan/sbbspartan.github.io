@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ESP32 Soil Sensor, InfluxDB, and Grafana · Samuel Belden</title>
+  <meta name="description" content="An ESP32 reads an RS485 soil moisture/temperature probe, logs to InfluxDB Cloud, and a public Grafana dashboard plots the data.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15140f" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="ESP32 Soil Sensor, InfluxDB, and Grafana · Samuel Belden">
+  <meta property="og:description" content="An ESP32 reads an RS485 soil moisture/temperature probe, logs to InfluxDB Cloud, and a public Grafana dashboard plots the data.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css?v=6">
+  <link rel="stylesheet" href="css/prism.css">
+</head>
+<body>
+<a class="visually-hidden" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html">Samuel Belden</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="ProjectsIndex.html" aria-current="page">Projects</a></li>
+        <li><a href="ActivitiesIndex.html">Activities</a></li>
+        <li><a href="ClassIndex.html">Classes</a></li>
+        <li><a href="ResumeIndex.html">Resume</a></li>
+        <li><a href="OtherIndex.html">Other</a></li>
+        <li><a href="ContactIndex.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<section class="article-header">
+  <div class="container">
+    <div class="prose">
+      <a class="back" href="ProjectsIndex.html">← Projects</a>
+      <h1>ESP32 Soil Sensor → InfluxDB → Grafana Dashboard</h1>
+      <p class="intro">A small plant-monitoring pipeline: an ESP32 reads an RS485 soil probe every five minutes, pushes the readings to InfluxDB Cloud, and a public Grafana dashboard plots them.</p>
+      <div class="hero-actions" style="justify-content:center"><a class="btn btn-primary" href="https://sbelden42.grafana.net/public-dashboards/c1af7c5465544f26a20e37ba9e41f967" rel="noopener">Open the live dashboard ↗</a></div>
+    </div>
+  </div>
+</section>
+<article class="article container">
+<h2>Overview</h2>
+<p>I wanted a no-fuss way to keep an eye on soil moisture and temperature for some houseplants without running a server at home. The whole stack is hosted: the microcontroller talks straight to InfluxDB Cloud over HTTPS, and Grafana Cloud reads from InfluxDB and serves a dashboard I can share with a link. Nothing to maintain beyond the ESP32 itself.</p>
+<div class="gallery cols-1"><figure><a href="img/top_level/soil_grafana.png"><img src="img/top_level/soil_grafana.png" alt="Grafana dashboard showing soil moisture and soil temperature over time" loading="lazy"></a></figure></div>
+<p class="caption">The Grafana dashboard: soil moisture (%) and soil temperature (°C), one point every five minutes. <a href="https://sbelden42.grafana.net/public-dashboards/c1af7c5465544f26a20e37ba9e41f967" rel="noopener">Live version</a>.</p>
+
+<h2>Hardware</h2>
+<p>The probe is a generic sealed RS485 soil moisture and temperature sensor that speaks Modbus RTU at 4800 baud. It exposes two holding registers — moisture and temperature, each scaled by 10 — so a single Modbus read returns both values. The ESP32 talks to it through an RS485 transceiver on UART2 (GPIO 16/17), with GPIO 4 driving the transceiver's DE/RE pin to switch between transmit and receive around each request. The <code>ModbusMaster</code> library handles the framing; the two <code>preTransmission</code>/<code>postTransmission</code> callbacks in the sketch just toggle that direction pin.</p>
+
+<h2>Logging to InfluxDB</h2>
+<p>InfluxDB's Arduino client (<code>InfluxDbClient</code>) does most of the work. On boot the ESP32 joins WiFi, syncs its clock over NTP (the InfluxDB Cloud TLS certificate can't be validated without correct time), and checks the connection to the bucket. Each reading is a single <code>Point</code> in the <code>soilSensor</code> measurement with two tags — the device type and the WiFi SSID — and two fields, <code>Soil Moisture</code> and <code>Soil Temperature</code>. The point is serialized to InfluxDB line protocol and written with one HTTPS call, then the loop sleeps for five minutes. That cadence is plenty for soil, and keeps the write volume comfortably inside the free tier.</p>
+<p>The bucket name, org ID, and API token live in <code>#define</code>s at the top of the sketch (redacted in the copy below). The token should be a write-only token scoped to the one bucket, so a leaked device can't read anything back.</p>
+
+<h2>Pulling the data into Grafana</h2>
+<p>Grafana Cloud connects to InfluxDB Cloud as a data source using the Flux query language, with the InfluxDB URL, org, and a read token. Each dashboard panel is a short Flux query that selects the measurement and field and lets Grafana pick the aggregation window to match the zoom level:</p>
+<pre><code class="language-js">from(bucket: "PlantLogger")
+  |&gt; range(start: v.timeRangeStart, stop: v.timeRangeStop)
+  |&gt; filter(fn: (r) =&gt; r["_measurement"] == "soilSensor")
+  |&gt; filter(fn: (r) =&gt; r["_field"] == "Soil Moisture")
+  |&gt; aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)</code></pre>
+<p>Two time-series panels — one per field — and the dashboard is done. Grafana's public dashboards feature turns it into a read-only page that anyone with the link can view, which is what the button at the top of this page points at.</p>
+
+<h2>Code</h2>
+<p>The full ESP32 sketch. Fill in your own WiFi credentials, InfluxDB org, and token before flashing.</p>
+<details class="code-block"><summary>ESP32 sketch — influxdb_example.ino</summary><pre><code class="language-cpp">#if defined(ESP32)
+#include &lt;WiFiMulti.h&gt;
+WiFiMulti wifiMulti;
+#define DEVICE "ESP32"
+#elif defined(ESP8266)
+#include &lt;ESP8266WiFiMulti.h&gt;
+ESP8266WiFiMulti wifiMulti;
+#define DEVICE "ESP8266"
+#endif
+
+#include &lt;InfluxDbClient.h&gt;
+#include &lt;InfluxDbCloud.h&gt;
+ // #include &lt;SoftwareSerial.h&gt;
+#include &lt;ModbusMaster.h&gt;
+
+// WiFi AP SSID
+#define WIFI_SSID "your-wifi-ssid"
+// WiFi password
+#define WIFI_PASSWORD "your-wifi-password"
+
+#define INFLUXDB_URL "https://us-east-1-1.aws.cloud2.influxdata.com"
+#define INFLUXDB_TOKEN "your-influxdb-api-token"
+#define INFLUXDB_ORG "your-influxdb-org-id"
+#define INFLUXDB_BUCKET "PlantLogger"
+
+// Time zone info
+#define TZ_INFO "UTC-6"
+
+// Declare InfluxDB client instance with preconfigured InfluxCloud certificate
+InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
+
+// Declare Data point
+Point sensor("soilSensor");
+
+ //RS485 config
+ #define RXD2 16
+ #define TXD2 17
+ #define RS485_DE_RE 4
+ HardwareSerial RS485Serial(2); //use uart2
+ ModbusMaster node;
+
+ void preTransmission() {
+digitalWrite(RS485_DE_RE, HIGH);
+ }
+ void postTransmission(){
+digitalWrite(RS485_DE_RE, LOW);
+ }
+
+
+void setup() {
+  Serial.begin(115200);
+
+  // Setup wifi
+  WiFi.mode(WIFI_STA);
+  wifiMulti.addAP(WIFI_SSID, WIFI_PASSWORD);
+
+  Serial.print("Connecting to wifi");
+  while (wifiMulti.run() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(100);
+  }
+  Serial.println();
+
+  // Accurate time is necessary for certificate validation and writing in batches
+  // We use the NTP servers in your area as provided by: https://www.pool.ntp.org/zone/
+  // Syncing progress and the time will be printed to Serial.
+  timeSync(TZ_INFO, "pool.ntp.org", "time.nis.gov");
+
+
+  // Check server connection
+  if (client.validateConnection()) {
+    Serial.print("Connected to InfluxDB: ");
+    Serial.println(client.getServerUrl());
+  } else {
+    Serial.print("InfluxDB connection failed: ");
+    Serial.println(client.getLastErrorMessage());
+  }
+
+  sensor.addTag("device", DEVICE);
+  sensor.addTag("SSID", WiFi.SSID());
+
+  pinMode(RS485_DE_RE, OUTPUT);
+  digitalWrite(RS485_DE_RE, LOW);
+  RS485Serial.begin(4800, SERIAL_8N1, RXD2, TXD2);
+  node.begin(1, RS485Serial);
+  node.preTransmission(preTransmission);
+  node.postTransmission(postTransmission);
+}
+
+
+ void loop() {
+ uint8_t result;
+ float humidity, temperature;
+
+ result = node.readHoldingRegisters(0x0000, 2);
+ if (result == node.ku8MBSuccess){
+  humidity = node.getResponseBuffer(0)/10.0;
+  temperature = node.getResponseBuffer(1)/10.0;
+ }
+ Serial.printf("Moisture: %.1f %%RH, Temp: %.1f C\n", humidity, temperature);
+ 
+  // Clear fields for reusing the point. Tags will remain the same as set above.
+  sensor.clearFields();
+
+  // Store measured value into point
+  // Report RSSI of currently connected network
+  sensor.addField("Soil Moisture", humidity);
+  sensor.addField("Soil Temperature", temperature);
+
+  // Print what are we exactly writing
+  Serial.print("Writing: ");
+  Serial.println(sensor.toLineProtocol());
+
+  // Check WiFi connection and reconnect if needed
+  if (wifiMulti.run() != WL_CONNECTED) {
+    Serial.println("Wifi connection lost");
+  }
+
+  // Write point
+  if (!client.writePoint(sensor)) {
+    Serial.print("InfluxDB write failed: ");
+    Serial.println(client.getLastErrorMessage());
+  }
+
+  Serial.println("Waiting 5 minutes");
+  Serial.println();
+  delay(300000);
+  }</code></pre></details>
+
+<h2>Next steps</h2>
+<p>Battery power with deep sleep between readings, a second probe or two on the same RS485 bus (each with its own Modbus address), and a Grafana alert when moisture drops below a threshold.</p>
+</article>
+
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; 2026 Samuel Belden</span>
+    <span><a href="mailto:sbelden42@gmail.com">sbelden42@gmail.com</a> &nbsp;&middot;&nbsp; <a href="ResumeIndex.html">Resume</a> &nbsp;&middot;&nbsp; <a href="ProjectsIndex.html">Projects</a></span>
+  </div>
+</footer>
+<script src="js/site.js" defer></script>
+<script src="js/prism.js" defer></script>
+</body>
+</html>
