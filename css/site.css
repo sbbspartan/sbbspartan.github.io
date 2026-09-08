@@ -212,7 +212,7 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .article-header .intro { color: var(--fg-muted); font-size: 1.15rem; margin-top: .5rem; }
 .article-header .back { display: inline-block; margin-bottom: 1.25rem; font-size: .9rem; color: var(--fg-muted); text-decoration: none; }
 .article-header .back:hover { color: var(--accent); }
-.article { padding-bottom: 3rem; overflow-wrap: anywhere; }
+.article { padding-bottom: 3rem; overflow-wrap: anywhere; --measure: 41rem; }  /* fixed width so code blocks share the text column edges */
 .article pre { overflow-wrap: normal; }
 .article > * { max-width: var(--measure); margin-inline: auto; }
 .article > h2 { margin-top: 2.5rem; padding-top: .5rem; text-align: center; }
