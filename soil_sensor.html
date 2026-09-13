@@ -73,64 +73,74 @@
   |&gt; aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)</code></pre>
 <p>Two time-series panels — one per field — and the dashboard is done. Grafana's public dashboards feature turns it into a read-only page that anyone with the link can view, which is what the button at the top of this page points at.</p>
 
+<h2>Automatic watering</h2>
+<p>With the readings already in hand every cycle, closing the loop is cheap: a small peristaltic pump, switched by a MOSFET from an ESP32 pin, waters the plant whenever the soil is drier than a threshold. Everything a person would want to tune is a <code>#define</code> at the top of the sketch — the pump pin, the moisture threshold, how many seconds to run the pump per dose, the minimum gap between doses (so the water has time to soak down to the probe before the next reading decides it's still dry), and a daily cap on waterings as a safety net if the probe ever fails low. The pump is only allowed to run on a successful Modbus read; a failed read logs a flag and does nothing. Pump seconds and the day's watering count are written to InfluxDB alongside the readings, so each dose shows up on the dashboard next to the moisture curve it caused.</p>
+<p><strong>Driving the pump.</strong> A logic-level N-channel MOSFET (an IRLZ44N or a small AO3400 both work for a peristaltic pump) as a low-side switch: pump between the pump supply and the drain, source to ground, gate to the ESP32 pin through a ~100&nbsp;Ω resistor with a 10&nbsp;kΩ pull-down so the pump stays off while the ESP32 boots. Put a flyback diode across the pump motor (cathode to the supply side), share a common ground between the pump supply and the ESP32, and power the pump from its own supply rather than the ESP32's 3.3&nbsp;V rail.</p>
 <h2>Code</h2>
-<p>The full ESP32 sketch. Fill in your own WiFi credentials, InfluxDB org, and token before flashing.</p>
-<details class="code-block"><summary>ESP32 sketch — influxdb_example.ino</summary><pre><code class="language-cpp">#if defined(ESP32)
-#include &lt;WiFiMulti.h&gt;
-WiFiMulti wifiMulti;
-#define DEVICE "ESP32"
+<p>The full ESP32 sketch, including the watering logic. Fill in your own WiFi credentials, InfluxDB org, and token, and set the pump pin, threshold, and run time in the block of <code>#define</code>s at the top before flashing.</p>
+<details class="code-block"><summary>ESP32 sketch — soil_pump.ino</summary><pre><code class="language-cpp">// ESP32 soil sensor -&gt; InfluxDB Cloud, with automatic watering.
+// Reads an RS485 Modbus soil moisture/temperature probe, logs to InfluxDB,
+// and runs a peristaltic pump (via a MOSFET) when the soil is drier than a threshold.
+
+#if defined(ESP32)
+  #include &lt;WiFiMulti.h&gt;
+  WiFiMulti wifiMulti;
+  #define DEVICE "ESP32"
 #elif defined(ESP8266)
-#include &lt;ESP8266WiFiMulti.h&gt;
-ESP8266WiFiMulti wifiMulti;
-#define DEVICE "ESP8266"
+  #include &lt;ESP8266WiFiMulti.h&gt;
+  ESP8266WiFiMulti wifiMulti;
+  #define DEVICE "ESP8266"
 #endif
 
 #include &lt;InfluxDbClient.h&gt;
 #include &lt;InfluxDbCloud.h&gt;
- // #include &lt;SoftwareSerial.h&gt;
 #include &lt;ModbusMaster.h&gt;
 
-// WiFi AP SSID
+// ---- WiFi / InfluxDB ----
 #define WIFI_SSID "your-wifi-ssid"
-// WiFi password
 #define WIFI_PASSWORD "your-wifi-password"
-
 #define INFLUXDB_URL "https://us-east-1-1.aws.cloud2.influxdata.com"
 #define INFLUXDB_TOKEN "your-influxdb-api-token"
 #define INFLUXDB_ORG "your-influxdb-org-id"
 #define INFLUXDB_BUCKET "PlantLogger"
-
-// Time zone info
 #define TZ_INFO "UTC-6"
 
-// Declare InfluxDB client instance with preconfigured InfluxCloud certificate
-InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
+// ---- Watering configuration (edit these) ----
+#define PUMP_PIN 26                  // GPIO driving the pump MOSFET gate (low-side N-channel)
+#define MOISTURE_THRESHOLD 20.0      // % soil moisture: water when a reading is below this
+#define PUMP_ON_SECONDS 10           // how long to run the peristaltic pump per watering
+#define MIN_WATER_INTERVAL_MIN 60    // minimum time between waterings, so water can soak in
+#define MAX_WATERINGS_PER_DAY 6      // safety cap in case the probe reads low or fails
+#define READ_INTERVAL_MIN 5          // minutes between sensor readings
 
-// Declare Data point
+// ---- RS485 / Modbus ----
+#define RXD2 16
+#define TXD2 17
+#define RS485_DE_RE 4
+HardwareSerial RS485Serial(2);       // UART2
+ModbusMaster node;
+
+InfluxDBClient client(INFLUXDB_URL, INFLUXDB_ORG, INFLUXDB_BUCKET, INFLUXDB_TOKEN, InfluxDbCloud2CACert);
 Point sensor("soilSensor");
 
- //RS485 config
- #define RXD2 16
- #define TXD2 17
- #define RS485_DE_RE 4
- HardwareSerial RS485Serial(2); //use uart2
- ModbusMaster node;
+// Watering state
+unsigned long lastWaterMillis = 0;
+bool hasWatered = false;
+int wateringsToday = 0;
+unsigned long dayStartMillis = 0;
 
- void preTransmission() {
-digitalWrite(RS485_DE_RE, HIGH);
- }
- void postTransmission(){
-digitalWrite(RS485_DE_RE, LOW);
- }
-
+void preTransmission()  { digitalWrite(RS485_DE_RE, HIGH); }
+void postTransmission() { digitalWrite(RS485_DE_RE, LOW); }
 
 void setup() {
   Serial.begin(115200);
 
-  // Setup wifi
+  // Pump MOSFET gate low before anything else, so the pump can't run during boot
+  pinMode(PUMP_PIN, OUTPUT);
+  digitalWrite(PUMP_PIN, LOW);
+
   WiFi.mode(WIFI_STA);
   wifiMulti.addAP(WIFI_SSID, WIFI_PASSWORD);
-
   Serial.print("Connecting to wifi");
   while (wifiMulti.run() != WL_CONNECTED) {
     Serial.print(".");
@@ -138,13 +148,9 @@ void setup() {
   }
   Serial.println();
 
-  // Accurate time is necessary for certificate validation and writing in batches
-  // We use the NTP servers in your area as provided by: https://www.pool.ntp.org/zone/
-  // Syncing progress and the time will be printed to Serial.
+  // Accurate time is needed for TLS certificate validation
   timeSync(TZ_INFO, "pool.ntp.org", "time.nis.gov");
 
-
-  // Check server connection
   if (client.validateConnection()) {
     Serial.print("Connected to InfluxDB: ");
     Serial.println(client.getServerUrl());
@@ -162,47 +168,92 @@ void setup() {
   node.begin(1, RS485Serial);
   node.preTransmission(preTransmission);
   node.postTransmission(postTransmission);
+
+  dayStartMillis = millis();
 }
 
+// Run the pump for PUMP_ON_SECONDS, then stop.
+void runPump() {
+  Serial.printf("Watering: pump on for %d s
+", PUMP_ON_SECONDS);
+  digitalWrite(PUMP_PIN, HIGH);
+  delay((unsigned long)PUMP_ON_SECONDS * 1000UL);
+  digitalWrite(PUMP_PIN, LOW);
+  lastWaterMillis = millis();
+  hasWatered = true;
+  wateringsToday++;
+}
 
- void loop() {
- uint8_t result;
- float humidity, temperature;
+// Decide whether to water given a valid moisture reading.
+// Returns the number of seconds pumped (0 or PUMP_ON_SECONDS).
+int maybeWater(float moisture) {
+  // Roll the daily counter every 24 h
+  if (millis() - dayStartMillis &gt;= 24UL * 60UL * 60UL * 1000UL) {
+    dayStartMillis = millis();
+    wateringsToday = 0;
+  }
+  if (moisture &gt;= MOISTURE_THRESHOLD) return 0;
 
- result = node.readHoldingRegisters(0x0000, 2);
- if (result == node.ku8MBSuccess){
-  humidity = node.getResponseBuffer(0)/10.0;
-  temperature = node.getResponseBuffer(1)/10.0;
- }
- Serial.printf("Moisture: %.1f %%RH, Temp: %.1f C\n", humidity, temperature);
- 
-  // Clear fields for reusing the point. Tags will remain the same as set above.
+  if (hasWatered &amp;&amp; (millis() - lastWaterMillis) &lt; (unsigned long)MIN_WATER_INTERVAL_MIN * 60UL * 1000UL) {
+    Serial.println("Soil is dry, but the last watering was too recent - waiting");
+    return 0;
+  }
+  if (wateringsToday &gt;= MAX_WATERINGS_PER_DAY) {
+    Serial.println("Soil is dry, but the daily watering cap is reached - not watering");
+    return 0;
+  }
+  runPump();
+  return PUMP_ON_SECONDS;
+}
+
+void loop() {
+  float humidity = 0, temperature = 0;
+  bool readOk = false;
+  int pumpedSeconds = 0;
+
+  uint8_t result = node.readHoldingRegisters(0x0000, 2);
+  if (result == node.ku8MBSuccess) {
+    humidity = node.getResponseBuffer(0) / 10.0;
+    temperature = node.getResponseBuffer(1) / 10.0;
+    readOk = true;
+    Serial.printf("Moisture: %.1f %%, Temp: %.1f C
+", humidity, temperature);
+  } else {
+    Serial.printf("Modbus read failed (code %d) - no watering this cycle
+", result);
+  }
+
+  // Only ever water on a good reading
+  if (readOk) {
+    pumpedSeconds = maybeWater(humidity);
+  }
+
+  // Build the InfluxDB point. Tags stay; fields are cleared each cycle.
   sensor.clearFields();
+  if (readOk) {
+    sensor.addField("Soil Moisture", humidity);
+    sensor.addField("Soil Temperature", temperature);
+  }
+  sensor.addField("Pump Seconds", pumpedSeconds);
+  sensor.addField("Waterings Today", wateringsToday);
+  sensor.addField("Read OK", readOk ? 1 : 0);
 
-  // Store measured value into point
-  // Report RSSI of currently connected network
-  sensor.addField("Soil Moisture", humidity);
-  sensor.addField("Soil Temperature", temperature);
-
-  // Print what are we exactly writing
   Serial.print("Writing: ");
   Serial.println(sensor.toLineProtocol());
 
-  // Check WiFi connection and reconnect if needed
   if (wifiMulti.run() != WL_CONNECTED) {
     Serial.println("Wifi connection lost");
   }
-
-  // Write point
   if (!client.writePoint(sensor)) {
     Serial.print("InfluxDB write failed: ");
     Serial.println(client.getLastErrorMessage());
   }
 
-  Serial.println("Waiting 5 minutes");
-  Serial.println();
-  delay(300000);
-  }</code></pre></details>
+  Serial.printf("Waiting %d minutes
+
+", READ_INTERVAL_MIN);
+  delay((unsigned long)READ_INTERVAL_MIN * 60UL * 1000UL);
+}</code></pre></details>
 
 <h2>Parts and references</h2>
 <ul>
@@ -213,7 +264,7 @@ void setup() {
   <li><a href="https://youtu.be/tDR09WTAcpA" rel="noopener">Video walkthrough of this style of soil sensor and its RS485 / Modbus register map</a> — YouTube; a good reference for the wiring and the holding-register layout the sketch reads.</li>
 </ul>
 <h2>Next steps</h2>
-<p>Battery power with deep sleep between readings, a second probe or two on the same RS485 bus (each with its own Modbus address), and a Grafana alert when moisture drops below a threshold.</p>
+<p>Battery power with deep sleep between readings, a second probe or two on the same RS485 bus (each with its own Modbus address), a water-level sensor on the reservoir so the pump never runs dry, and a Grafana alert when moisture stays low despite watering.</p>
 </article>
 
 </main>
