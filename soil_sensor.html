@@ -76,7 +76,7 @@
 <h2>Automatic watering</h2>
 <p>With the readings already in hand every cycle, closing the loop is cheap: a small peristaltic pump, switched by a MOSFET from an ESP32 pin, waters the plant whenever the soil is drier than a threshold. Everything a person would want to tune is a <code>#define</code> at the top of the sketch — the pump pin, the moisture threshold, how many seconds to run the pump per dose, the minimum gap between doses (so the water has time to soak down to the probe before the next reading decides it's still dry), and a daily cap on waterings as a safety net if the probe ever fails low. The pump is only allowed to run on a successful Modbus read; a failed read logs a flag and does nothing. Pump seconds and the day's watering count are written to InfluxDB alongside the readings, so each dose shows up on the dashboard next to the moisture curve it caused.</p>
 <p><strong>Driving the pump.</strong> A logic-level N-channel MOSFET (an IRLZ44N or a small AO3400 both work for a peristaltic pump) as a low-side switch: pump between the pump supply and the drain, source to ground, gate to the ESP32 pin through a ~100&nbsp;Ω resistor with a 10&nbsp;kΩ pull-down so the pump stays off while the ESP32 boots. Put a flyback diode across the pump motor (cathode to the supply side), share a common ground between the pump supply and the ESP32, and power the pump from its own supply rather than the ESP32's 3.3&nbsp;V rail.</p>
-<p><strong>Keeping it quiet.</strong> Small peristaltic pumps whine at full speed, so the MOSFET gate is driven with 25&nbsp;kHz PWM from the ESP32's LEDC peripheral rather than switched hard on. <code>PUMP_DUTY_PERCENT</code> sets the speed — around half duty is dramatically quieter, and the dose is made up with a longer <code>PUMP_ON_SECONDS</code>. A 200&nbsp;ms full-power kick at the start gets the brushed motor turning before it drops to the low duty, and the PWM frequency sits above hearing range so the switching itself adds no tone.</p>
+<p><strong>Keeping it quiet.</strong> Small peristaltic pumps whine at full speed, so the MOSFET gate is driven with 25&nbsp;kHz PWM from the ESP32's LEDC peripheral rather than switched hard on. <code>PUMP_DUTY_PERCENT</code> sets the speed — around half duty is dramatically quieter, and the dose is made up with a longer <code>PUMP_ON_SECONDS</code>. A 200&nbsp;ms full-power kick at the start gets the brushed motor turning before it drops to the low duty, and the PWM frequency sits above hearing range so the switching itself adds no tone. One gotcha: a big MOSFET like the IRLZ44N has a lot of gate charge, and a 3.3&nbsp;V GPIO through a 1&nbsp;kΩ gate resistor can't switch it fast enough at 25&nbsp;kHz — the motor stalls at any duty below 100%. The fix is a small gate resistor (47–100&nbsp;Ω) and setting the pin to its maximum 40&nbsp;mA drive strength, which the sketch does in <code>pumpSetup()</code>.</p>
 <p><strong>Wireless updates.</strong> The sketch also enables ArduinoOTA, so after the first USB flash the board shows up under Tools → Port → Network ports in the Arduino IDE and later uploads go over WiFi. The five-minute wait between readings (and the pump run) is a loop that keeps servicing OTA rather than a blocking <code>delay()</code>, and the OTA start callback drops the pump pin low so an upload can never leave the pump running.</p>
 <h2>Code</h2>
 <p>The full ESP32 sketch, including the watering logic. Fill in your own WiFi credentials, InfluxDB org, and token, and set the OTA password, pump pin, threshold, and run time in the block of <code>#define</code>s at the top before flashing.</p>
@@ -98,6 +98,7 @@
 #include &lt;InfluxDbCloud.h&gt;
 #include &lt;ModbusMaster.h&gt;
 #include &lt;ArduinoOTA.h&gt;
+#include &lt;driver/gpio.h&gt;       // gpio_set_drive_capability
 
 // ---- WiFi / InfluxDB ----
 #define WIFI_SSID "your-wifi-ssid"
@@ -114,7 +115,7 @@
 #define OTA_PASSWORD "change-me"      // the IDE asks for this before a wireless upload
 
 // ---- Watering configuration (edit these) ----
-#define PUMP_PIN 26                  // GPIO driving the pump MOSFET gate (low-side N-channel)
+#define PUMP_PIN 18                  // GPIO driving the pump MOSFET gate (low-side N-channel, e.g. IRLZ44N)
 #define MOISTURE_THRESHOLD 20.0      // % soil moisture: water when a reading is below this
 #define PUMP_ON_SECONDS 10           // how long to run the peristaltic pump per watering
 #define PUMP_DUTY_PERCENT 50         // pump speed, 0-100. Lower = quieter, slower; raise PUMP_ON_SECONDS to match
@@ -148,6 +149,9 @@ void postTransmission() { digitalWrite(RS485_DE_RE, LOW); }
 #define PUMP_PWM_BITS 8
 #define PUMP_PWM_CHANNEL 0
 void pumpSetup() {
+  // Max drive strength (40 mA) so the pin can charge a big MOSFET gate quickly enough for 25 kHz PWM.
+  // Pair this with a small gate resistor (47-100 ohm) and a 10k gate pull-down.
+  gpio_set_drive_capability((gpio_num_t)PUMP_PIN, GPIO_DRIVE_CAP_3);
 #if defined(ESP_ARDUINO_VERSION_MAJOR) &amp;&amp; ESP_ARDUINO_VERSION_MAJOR &gt;= 3
   ledcAttach(PUMP_PIN, PUMP_PWM_HZ, PUMP_PWM_BITS);
 #else
