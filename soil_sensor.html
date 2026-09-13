@@ -76,8 +76,9 @@
 <h2>Automatic watering</h2>
 <p>With the readings already in hand every cycle, closing the loop is cheap: a small peristaltic pump, switched by a MOSFET from an ESP32 pin, waters the plant whenever the soil is drier than a threshold. Everything a person would want to tune is a <code>#define</code> at the top of the sketch — the pump pin, the moisture threshold, how many seconds to run the pump per dose, the minimum gap between doses (so the water has time to soak down to the probe before the next reading decides it's still dry), and a daily cap on waterings as a safety net if the probe ever fails low. The pump is only allowed to run on a successful Modbus read; a failed read logs a flag and does nothing. Pump seconds and the day's watering count are written to InfluxDB alongside the readings, so each dose shows up on the dashboard next to the moisture curve it caused.</p>
 <p><strong>Driving the pump.</strong> A logic-level N-channel MOSFET (an IRLZ44N or a small AO3400 both work for a peristaltic pump) as a low-side switch: pump between the pump supply and the drain, source to ground, gate to the ESP32 pin through a ~100&nbsp;Ω resistor with a 10&nbsp;kΩ pull-down so the pump stays off while the ESP32 boots. Put a flyback diode across the pump motor (cathode to the supply side), share a common ground between the pump supply and the ESP32, and power the pump from its own supply rather than the ESP32's 3.3&nbsp;V rail.</p>
+<p><strong>Wireless updates.</strong> The sketch also enables ArduinoOTA, so after the first USB flash the board shows up under Tools → Port → Network ports in the Arduino IDE and later uploads go over WiFi. The five-minute wait between readings (and the pump run) is a loop that keeps servicing OTA rather than a blocking <code>delay()</code>, and the OTA start callback drops the pump pin low so an upload can never leave the pump running.</p>
 <h2>Code</h2>
-<p>The full ESP32 sketch, including the watering logic. Fill in your own WiFi credentials, InfluxDB org, and token, and set the pump pin, threshold, and run time in the block of <code>#define</code>s at the top before flashing.</p>
+<p>The full ESP32 sketch, including the watering logic. Fill in your own WiFi credentials, InfluxDB org, and token, and set the OTA password, pump pin, threshold, and run time in the block of <code>#define</code>s at the top before flashing.</p>
 <details class="code-block"><summary>ESP32 sketch — soil_pump.ino</summary><pre><code class="language-cpp">// ESP32 soil sensor -&gt; InfluxDB Cloud, with automatic watering.
 // Reads an RS485 Modbus soil moisture/temperature probe, logs to InfluxDB,
 // and runs a peristaltic pump (via a MOSFET) when the soil is drier than a threshold.
@@ -95,6 +96,7 @@
 #include &lt;InfluxDbClient.h&gt;
 #include &lt;InfluxDbCloud.h&gt;
 #include &lt;ModbusMaster.h&gt;
+#include &lt;ArduinoOTA.h&gt;
 
 // ---- WiFi / InfluxDB ----
 #define WIFI_SSID "your-wifi-ssid"
@@ -104,6 +106,11 @@
 #define INFLUXDB_ORG "your-influxdb-org-id"
 #define INFLUXDB_BUCKET "PlantLogger"
 #define TZ_INFO "UTC-6"
+
+// ---- Over-the-air updates ----
+// After the first USB upload, the board appears under Tools &gt; Port &gt; Network ports as OTA_HOSTNAME.
+#define OTA_HOSTNAME "soil-sensor"
+#define OTA_PASSWORD "change-me"      // the IDE asks for this before a wireless upload
 
 // ---- Watering configuration (edit these) ----
 #define PUMP_PIN 26                  // GPIO driving the pump MOSFET gate (low-side N-channel)
@@ -162,6 +169,18 @@ void setup() {
   sensor.addTag("device", DEVICE);
   sensor.addTag("SSID", WiFi.SSID());
 
+  // OTA: make sure the pump is off if an upload interrupts a watering
+  ArduinoOTA.setHostname(OTA_HOSTNAME);
+  ArduinoOTA.setPassword(OTA_PASSWORD);
+  ArduinoOTA.onStart([]() { digitalWrite(PUMP_PIN, LOW); Serial.println("OTA update starting"); });
+  ArduinoOTA.onEnd([]()   { Serial.println("
+OTA update done, rebooting"); });
+  ArduinoOTA.onError([](ota_error_t e) { Serial.printf("OTA error %u
+", e); });
+  ArduinoOTA.begin();
+  Serial.printf("OTA ready: %s at %s
+", OTA_HOSTNAME, WiFi.localIP().toString().c_str());
+
   pinMode(RS485_DE_RE, OUTPUT);
   digitalWrite(RS485_DE_RE, LOW);
   RS485Serial.begin(4800, SERIAL_8N1, RXD2, TXD2);
@@ -172,12 +191,22 @@ void setup() {
   dayStartMillis = millis();
 }
 
+// Wait for the given number of milliseconds while keeping OTA (and WiFi) serviced.
+// A plain delay() would leave the board unreachable for wireless uploads.
+void waitAndServiceOTA(unsigned long ms) {
+  unsigned long start = millis();
+  while (millis() - start &lt; ms) {
+    ArduinoOTA.handle();
+    delay(10);
+  }
+}
+
 // Run the pump for PUMP_ON_SECONDS, then stop.
 void runPump() {
   Serial.printf("Watering: pump on for %d s
 ", PUMP_ON_SECONDS);
   digitalWrite(PUMP_PIN, HIGH);
-  delay((unsigned long)PUMP_ON_SECONDS * 1000UL);
+  waitAndServiceOTA((unsigned long)PUMP_ON_SECONDS * 1000UL);
   digitalWrite(PUMP_PIN, LOW);
   lastWaterMillis = millis();
   hasWatered = true;
@@ -249,10 +278,10 @@ void loop() {
     Serial.println(client.getLastErrorMessage());
   }
 
-  Serial.printf("Waiting %d minutes
+  Serial.printf("Waiting %d minutes (OTA stays available)
 
 ", READ_INTERVAL_MIN);
-  delay((unsigned long)READ_INTERVAL_MIN * 60UL * 1000UL);
+  waitAndServiceOTA((unsigned long)READ_INTERVAL_MIN * 60UL * 1000UL);
 }</code></pre></details>
 
 <h2>Parts and references</h2>
