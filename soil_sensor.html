@@ -76,6 +76,7 @@
 <h2>Automatic watering</h2>
 <p>With the readings already in hand every cycle, closing the loop is cheap: a small peristaltic pump, switched by a MOSFET from an ESP32 pin, waters the plant whenever the soil is drier than a threshold. Everything a person would want to tune is a <code>#define</code> at the top of the sketch — the pump pin, the moisture threshold, how many seconds to run the pump per dose, the minimum gap between doses (so the water has time to soak down to the probe before the next reading decides it's still dry), and a daily cap on waterings as a safety net if the probe ever fails low. The pump is only allowed to run on a successful Modbus read; a failed read logs a flag and does nothing. Pump seconds and the day's watering count are written to InfluxDB alongside the readings, so each dose shows up on the dashboard next to the moisture curve it caused.</p>
 <p><strong>Driving the pump.</strong> A logic-level N-channel MOSFET (an IRLZ44N or a small AO3400 both work for a peristaltic pump) as a low-side switch: pump between the pump supply and the drain, source to ground, gate to the ESP32 pin through a ~100&nbsp;Ω resistor with a 10&nbsp;kΩ pull-down so the pump stays off while the ESP32 boots. Put a flyback diode across the pump motor (cathode to the supply side), share a common ground between the pump supply and the ESP32, and power the pump from its own supply rather than the ESP32's 3.3&nbsp;V rail.</p>
+<p><strong>Keeping it quiet.</strong> Small peristaltic pumps whine at full speed, so the MOSFET gate is driven with 25&nbsp;kHz PWM from the ESP32's LEDC peripheral rather than switched hard on. <code>PUMP_DUTY_PERCENT</code> sets the speed — around half duty is dramatically quieter, and the dose is made up with a longer <code>PUMP_ON_SECONDS</code>. A 200&nbsp;ms full-power kick at the start gets the brushed motor turning before it drops to the low duty, and the PWM frequency sits above hearing range so the switching itself adds no tone.</p>
 <p><strong>Wireless updates.</strong> The sketch also enables ArduinoOTA, so after the first USB flash the board shows up under Tools → Port → Network ports in the Arduino IDE and later uploads go over WiFi. The five-minute wait between readings (and the pump run) is a loop that keeps servicing OTA rather than a blocking <code>delay()</code>, and the OTA start callback drops the pump pin low so an upload can never leave the pump running.</p>
 <h2>Code</h2>
 <p>The full ESP32 sketch, including the watering logic. Fill in your own WiFi credentials, InfluxDB org, and token, and set the OTA password, pump pin, threshold, and run time in the block of <code>#define</code>s at the top before flashing.</p>
@@ -116,6 +117,9 @@
 #define PUMP_PIN 26                  // GPIO driving the pump MOSFET gate (low-side N-channel)
 #define MOISTURE_THRESHOLD 20.0      // % soil moisture: water when a reading is below this
 #define PUMP_ON_SECONDS 10           // how long to run the peristaltic pump per watering
+#define PUMP_DUTY_PERCENT 50         // pump speed, 0-100. Lower = quieter, slower; raise PUMP_ON_SECONDS to match
+#define PUMP_KICK_MS 200             // brief full-power kick so the motor starts reliably at low duty
+#define PUMP_PWM_HZ 25000            // above hearing range, so the PWM itself doesn't whine
 #define MIN_WATER_INTERVAL_MIN 60    // minimum time between waterings, so water can soak in
 #define MAX_WATERINGS_PER_DAY 6      // safety cap in case the probe reads low or fails
 #define READ_INTERVAL_MIN 5          // minutes between sensor readings
@@ -139,12 +143,37 @@ unsigned long dayStartMillis = 0;
 void preTransmission()  { digitalWrite(RS485_DE_RE, HIGH); }
 void postTransmission() { digitalWrite(RS485_DE_RE, LOW); }
 
+// ---- Pump PWM (ESP32 LEDC peripheral) ----
+// Works with both the 2.x and 3.x esp32 Arduino cores, whose LEDC APIs differ.
+#define PUMP_PWM_BITS 8
+#define PUMP_PWM_CHANNEL 0
+void pumpSetup() {
+#if defined(ESP_ARDUINO_VERSION_MAJOR) &amp;&amp; ESP_ARDUINO_VERSION_MAJOR &gt;= 3
+  ledcAttach(PUMP_PIN, PUMP_PWM_HZ, PUMP_PWM_BITS);
+#else
+  ledcSetup(PUMP_PWM_CHANNEL, PUMP_PWM_HZ, PUMP_PWM_BITS);
+  ledcAttachPin(PUMP_PIN, PUMP_PWM_CHANNEL);
+#endif
+}
+void pumpSet(int percent) {
+  percent = constrain(percent, 0, 100);
+  uint32_t duty = (uint32_t)percent * ((1u &lt;&lt; PUMP_PWM_BITS) - 1) / 100u;
+#if defined(ESP_ARDUINO_VERSION_MAJOR) &amp;&amp; ESP_ARDUINO_VERSION_MAJOR &gt;= 3
+  ledcWrite(PUMP_PIN, duty);
+#else
+  ledcWrite(PUMP_PWM_CHANNEL, duty);
+#endif
+}
+void pumpOff() { pumpSet(0); }
+
 void setup() {
   Serial.begin(115200);
 
-  // Pump MOSFET gate low before anything else, so the pump can't run during boot
+  // Pump off before anything else, so it can't run during boot
   pinMode(PUMP_PIN, OUTPUT);
   digitalWrite(PUMP_PIN, LOW);
+  pumpSetup();
+  pumpOff();
 
   WiFi.mode(WIFI_STA);
   wifiMulti.addAP(WIFI_SSID, WIFI_PASSWORD);
@@ -172,7 +201,7 @@ void setup() {
   // OTA: make sure the pump is off if an upload interrupts a watering
   ArduinoOTA.setHostname(OTA_HOSTNAME);
   ArduinoOTA.setPassword(OTA_PASSWORD);
-  ArduinoOTA.onStart([]() { digitalWrite(PUMP_PIN, LOW); Serial.println("OTA update starting"); });
+  ArduinoOTA.onStart([]() { pumpOff(); Serial.println("OTA update starting"); });
   ArduinoOTA.onEnd([]()   { Serial.println("
 OTA update done, rebooting"); });
   ArduinoOTA.onError([](ota_error_t e) { Serial.printf("OTA error %u
@@ -201,13 +230,16 @@ void waitAndServiceOTA(unsigned long ms) {
   }
 }
 
-// Run the pump for PUMP_ON_SECONDS, then stop.
+// Run the pump for PUMP_ON_SECONDS at PUMP_DUTY_PERCENT, then stop.
+// A short full-power kick gets the motor turning before dropping to the quieter duty.
 void runPump() {
-  Serial.printf("Watering: pump on for %d s
-", PUMP_ON_SECONDS);
-  digitalWrite(PUMP_PIN, HIGH);
+  Serial.printf("Watering: pump on for %d s at %d%%
+", PUMP_ON_SECONDS, PUMP_DUTY_PERCENT);
+  pumpSet(100);
+  waitAndServiceOTA(PUMP_KICK_MS);
+  pumpSet(PUMP_DUTY_PERCENT);
   waitAndServiceOTA((unsigned long)PUMP_ON_SECONDS * 1000UL);
-  digitalWrite(PUMP_PIN, LOW);
+  pumpOff();
   lastWaterMillis = millis();
   hasWatered = true;
   wateringsToday++;
