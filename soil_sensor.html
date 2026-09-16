@@ -74,7 +74,7 @@
 <p>Two time-series panels — one per field — and the dashboard is done. Grafana's public dashboards feature turns it into a read-only page that anyone with the link can view, which is what the button at the top of this page points at.</p>
 
 <h2>Automatic watering</h2>
-<p>With the readings already in hand every cycle, closing the loop is cheap: a small peristaltic pump, switched by a MOSFET from an ESP32 pin, waters the plant whenever the soil is drier than a threshold. Everything a person would want to tune is a <code>#define</code> at the top of the sketch — the pump pin, the moisture threshold, how many seconds to run the pump per dose, the minimum gap between doses (so the water has time to soak down to the probe before the next reading decides it's still dry), and a daily cap on waterings as a safety net if the probe ever fails low. The pump is only allowed to run on a successful Modbus read; a failed read logs a flag and does nothing. Pump seconds and the day's watering count are written to InfluxDB alongside the readings, so each dose shows up on the dashboard next to the moisture curve it caused.</p>
+<p>With the readings already in hand every cycle, closing the loop is cheap: a small peristaltic pump, switched by a MOSFET from an ESP32 pin, waters the plant whenever the soil is drier than a threshold. Everything a person would want to tune is a <code>#define</code> at the top of the sketch — the pump pin, the moisture threshold, how many seconds to run the pump per dose, the minimum gap between doses (so the water has time to soak down to the probe before the next reading decides it's still dry), and a daily cap on waterings as a safety net if the probe ever fails low. The pump is only allowed to run on a successful Modbus read; a failed read logs a flag and does nothing. A quiet-hours window (10&nbsp;pm to 8&nbsp;am by default, using the NTP-synced local clock) blocks watering overnight, and if the clock hasn't synced yet the sketch assumes quiet hours rather than guessing. Pump seconds and the day's watering count are written to InfluxDB alongside the readings, so each dose shows up on the dashboard next to the moisture curve it caused.</p>
 <p><strong>Driving the pump.</strong> A logic-level N-channel MOSFET (an IRLZ44N or a small AO3400 both work for a peristaltic pump) as a low-side switch: pump between the pump supply and the drain, source to ground, gate to the ESP32 pin through a ~100&nbsp;Ω resistor with a 10&nbsp;kΩ pull-down so the pump stays off while the ESP32 boots. Put a flyback diode across the pump motor (cathode to the supply side), share a common ground between the pump supply and the ESP32, and power the pump from its own supply rather than the ESP32's 3.3&nbsp;V rail.</p>
 <p><strong>Keeping it quiet.</strong> Small peristaltic pumps whine at full speed, so the MOSFET gate is driven with 25&nbsp;kHz PWM from the ESP32's LEDC peripheral rather than switched hard on. <code>PUMP_DUTY_PERCENT</code> sets the speed — around half duty is dramatically quieter, and the dose is made up with a longer <code>PUMP_ON_SECONDS</code>. A 200&nbsp;ms full-power kick at the start gets the brushed motor turning before it drops to the low duty, and the PWM frequency sits above hearing range so the switching itself adds no tone. One gotcha: a big MOSFET like the IRLZ44N has a lot of gate charge, and a 3.3&nbsp;V GPIO through a 1&nbsp;kΩ gate resistor can't switch it fast enough at 25&nbsp;kHz — the motor stalls at any duty below 100%. The fix is a small gate resistor (47–100&nbsp;Ω) and setting the pin to its maximum 40&nbsp;mA drive strength, which the sketch does in <code>pumpSetup()</code>.</p>
 <p><strong>Wireless updates.</strong> The sketch also enables ArduinoOTA, so after the first USB flash the board shows up under Tools → Port → Network ports in the Arduino IDE and later uploads go over WiFi. The five-minute wait between readings (and the pump run) is a loop that keeps servicing OTA rather than a blocking <code>delay()</code>, and the OTA start callback drops the pump pin low so an upload can never leave the pump running.</p>
@@ -107,7 +107,7 @@
 #define INFLUXDB_TOKEN "your-influxdb-api-token"
 #define INFLUXDB_ORG "your-influxdb-org-id"
 #define INFLUXDB_BUCKET "PlantLogger"
-#define TZ_INFO "UTC-6"
+#define TZ_INFO "CST6CDT,M3.2.0,M11.1.0"   // US Central with DST (POSIX format)
 
 // ---- Over-the-air updates ----
 // After the first USB upload, the board appears under Tools &gt; Port &gt; Network ports as OTA_HOSTNAME.
@@ -123,6 +123,8 @@
 #define PUMP_PWM_HZ 25000            // above hearing range, so the PWM itself doesn't whine
 #define MIN_WATER_INTERVAL_MIN 60    // minimum time between waterings, so water can soak in
 #define MAX_WATERINGS_PER_DAY 6      // safety cap in case the probe reads low or fails
+#define QUIET_START_HOUR 22          // no watering from this hour (24h clock, local time)...
+#define QUIET_END_HOUR 8             // ...until this hour
 #define READ_INTERVAL_MIN 5          // minutes between sensor readings
 
 // ---- RS485 / Modbus ----
@@ -249,6 +251,19 @@ void runPump() {
   wateringsToday++;
 }
 
+// True during the no-watering window. If the clock isn't set yet, err on the side of not watering.
+bool inQuietHours() {
+  struct tm t;
+  if (!getLocalTime(&amp;t, 50)) {
+    Serial.println("Local time not available - treating as quiet hours");
+    return true;
+  }
+  int h = t.tm_hour;
+  if (QUIET_START_HOUR &gt; QUIET_END_HOUR)          // window wraps past midnight, e.g. 22 -&gt; 8
+    return h &gt;= QUIET_START_HOUR || h &lt; QUIET_END_HOUR;
+  return h &gt;= QUIET_START_HOUR &amp;&amp; h &lt; QUIET_END_HOUR;
+}
+
 // Decide whether to water given a valid moisture reading.
 // Returns the number of seconds pumped (0 or PUMP_ON_SECONDS).
 int maybeWater(float moisture) {
@@ -259,6 +274,11 @@ int maybeWater(float moisture) {
   }
   if (moisture &gt;= MOISTURE_THRESHOLD) return 0;
 
+  if (inQuietHours()) {
+    Serial.printf("Soil is dry, but it's quiet hours (%02d:00-%02d:00) - not watering
+", QUIET_START_HOUR, QUIET_END_HOUR);
+    return 0;
+  }
   if (hasWatered &amp;&amp; (millis() - lastWaterMillis) &lt; (unsigned long)MIN_WATER_INTERVAL_MIN * 60UL * 1000UL) {
     Serial.println("Soil is dry, but the last watering was too recent - waiting");
     return 0;
