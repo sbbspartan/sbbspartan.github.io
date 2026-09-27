@@ -80,9 +80,10 @@
 <p><strong>Wireless updates.</strong> The sketch also enables ArduinoOTA, so after the first USB flash the board shows up under Tools → Port → Network ports in the Arduino IDE and later uploads go over WiFi. The five-minute wait between readings (and the pump run) is a loop that keeps servicing OTA rather than a blocking <code>delay()</code>, and the OTA start callback drops the pump pin low so an upload can never leave the pump running.</p>
 <h2>Code</h2>
 <p>The full ESP32 sketch, including the watering logic. Fill in your own WiFi credentials, InfluxDB org, and token, and set the OTA password, pump pin, threshold, and run time in the block of <code>#define</code>s at the top before flashing.</p>
+<p>Watering only fires on a valid reading, and then only after a chain of interlocks: a sanity floor on the reading (a probe sitting in air reads 0%), a lockout if the last reset was a brownout (a sign the pump's inrush dragged the supply down and rebooted the board), a 60 s arming delay after boot, quiet hours overnight, a minimum interval between waterings, and a daily cap. The pump soft-starts over half a second to spread out its inrush, and the reset reason and uptime are logged with every point so a flaky supply shows up on the dashboard.</p>
 <details class="code-block"><summary>ESP32 sketch — soil_pump.ino</summary><pre><code class="language-cpp">// ESP32 soil sensor -&gt; InfluxDB Cloud, with automatic watering.
 // Reads an RS485 Modbus soil moisture/temperature probe, logs to InfluxDB,
-// and runs a peristaltic pump (via a MOSFET) when the soil is drier than a threshold.
+// and runs a 12 V pump (via a MOSFET) when the soil is drier than a threshold.
 
 #if defined(ESP32)
   #include &lt;WiFiMulti.h&gt;
@@ -99,6 +100,7 @@
 #include &lt;ModbusMaster.h&gt;
 #include &lt;ArduinoOTA.h&gt;
 #include &lt;driver/gpio.h&gt;       // gpio_set_drive_capability
+#include &lt;esp_system.h&gt;        // esp_reset_reason
 
 // ---- WiFi / InfluxDB ----
 #define WIFI_SSID "your-wifi-ssid"
@@ -117,14 +119,16 @@
 // ---- Watering configuration (edit these) ----
 #define PUMP_PIN 18                  // GPIO driving the pump MOSFET gate (low-side N-channel, e.g. IRLZ44N)
 #define MOISTURE_THRESHOLD 20.0      // % soil moisture: water when a reading is below this
-#define PUMP_ON_SECONDS 10           // how long to run the peristaltic pump per watering
-#define PUMP_DUTY_PERCENT 50         // pump speed, 0-100. Lower = quieter, slower; raise PUMP_ON_SECONDS to match
-#define PUMP_KICK_MS 200             // brief full-power kick so the motor starts reliably at low duty
+#define MOISTURE_MIN_VALID 1.0       // readings below this are treated as "probe not in soil" and never water
+#define PUMP_ON_SECONDS 10           // how long to run the pump per watering
+#define PUMP_DUTY_PERCENT 100        // pump speed, 0-100. A diaphragm pump should run at 100; lower only for a small peristaltic
+#define PUMP_RAMP_MS 500             // soft-start: ramp from 0 to PUMP_DUTY_PERCENT over this time to limit inrush
 #define PUMP_PWM_HZ 25000            // above hearing range, so the PWM itself doesn't whine
 #define MIN_WATER_INTERVAL_MIN 60    // minimum time between waterings, so water can soak in
 #define MAX_WATERINGS_PER_DAY 6      // safety cap in case the probe reads low or fails
 #define QUIET_START_HOUR 22          // no watering from this hour (24h clock, local time)...
 #define QUIET_END_HOUR 8             // ...until this hour
+#define ARM_DELAY_SEC 60             // no watering in the first N seconds after boot (bench-test / reboot-loop guard)
 #define READ_INTERVAL_MIN 5          // minutes between sensor readings
 
 // ---- RS485 / Modbus ----
@@ -142,6 +146,24 @@ unsigned long lastWaterMillis = 0;
 bool hasWatered = false;
 int wateringsToday = 0;
 unsigned long dayStartMillis = 0;
+unsigned long bootMillis = 0;
+esp_reset_reason_t resetReason = ESP_RST_UNKNOWN;
+bool wateringLocked = false;         // set when the last reset was a brownout: no watering until a clean reboot
+
+const char* resetReasonName(esp_reset_reason_t r) {
+  switch (r) {
+    case ESP_RST_POWERON:  return "poweron";
+    case ESP_RST_SW:       return "software";
+    case ESP_RST_PANIC:    return "panic";
+    case ESP_RST_INT_WDT:  return "int_wdt";
+    case ESP_RST_TASK_WDT: return "task_wdt";
+    case ESP_RST_WDT:      return "wdt";
+    case ESP_RST_DEEPSLEEP:return "deepsleep";
+    case ESP_RST_BROWNOUT: return "brownout";
+    case ESP_RST_SDIO:     return "sdio";
+    default:               return "unknown";
+  }
+}
 
 void preTransmission()  { digitalWrite(RS485_DE_RE, HIGH); }
 void postTransmission() { digitalWrite(RS485_DE_RE, LOW); }
@@ -152,7 +174,8 @@ void postTransmission() { digitalWrite(RS485_DE_RE, LOW); }
 #define PUMP_PWM_CHANNEL 0
 void pumpSetup() {
   // Max drive strength (40 mA) so the pin can charge a big MOSFET gate quickly enough for 25 kHz PWM.
-  // Pair this with a small gate resistor (47-100 ohm) and a 10k gate pull-down.
+  // Pair this with a 10k gate pull-down (keeps the pump off while the ESP32 is in reset) and a
+  // flyback diode across the pump terminals, banded end to +12 V.
   gpio_set_drive_capability((gpio_num_t)PUMP_PIN, GPIO_DRIVE_CAP_3);
 #if defined(ESP_ARDUINO_VERSION_MAJOR) &amp;&amp; ESP_ARDUINO_VERSION_MAJOR &gt;= 3
   ledcAttach(PUMP_PIN, PUMP_PWM_HZ, PUMP_PWM_BITS);
@@ -173,13 +196,24 @@ void pumpSet(int percent) {
 void pumpOff() { pumpSet(0); }
 
 void setup() {
-  Serial.begin(115200);
-
   // Pump off before anything else, so it can't run during boot
   pinMode(PUMP_PIN, OUTPUT);
   digitalWrite(PUMP_PIN, LOW);
   pumpSetup();
   pumpOff();
+
+  Serial.begin(115200);
+  bootMillis = millis();
+
+  // A brownout reset usually means the pump's inrush dragged the supply down and rebooted us.
+  // Since a reset wipes the interval/daily-cap state, lock watering out until a clean power cycle
+  // so a marginal supply can't cause a reboot loop. The reason is logged to InfluxDB each cycle.
+  resetReason = esp_reset_reason();
+  Serial.printf("Reset reason: %s\n", resetReasonName(resetReason));
+  if (resetReason == ESP_RST_BROWNOUT) {
+    wateringLocked = true;
+    Serial.println("Last reset was a BROWNOUT - watering locked out until the next clean power-on");
+  }
 
   WiFi.mode(WIFI_STA);
   wifiMulti.addAP(WIFI_SSID, WIFI_PASSWORD);
@@ -208,13 +242,10 @@ void setup() {
   ArduinoOTA.setHostname(OTA_HOSTNAME);
   ArduinoOTA.setPassword(OTA_PASSWORD);
   ArduinoOTA.onStart([]() { pumpOff(); Serial.println("OTA update starting"); });
-  ArduinoOTA.onEnd([]()   { Serial.println("
-OTA update done, rebooting"); });
-  ArduinoOTA.onError([](ota_error_t e) { Serial.printf("OTA error %u
-", e); });
+  ArduinoOTA.onEnd([]()   { Serial.println("\nOTA update done, rebooting"); });
+  ArduinoOTA.onError([](ota_error_t e) { Serial.printf("OTA error %u\n", e); });
   ArduinoOTA.begin();
-  Serial.printf("OTA ready: %s at %s
-", OTA_HOSTNAME, WiFi.localIP().toString().c_str());
+  Serial.printf("OTA ready: %s at %s\n", OTA_HOSTNAME, WiFi.localIP().toString().c_str());
 
   pinMode(RS485_DE_RE, OUTPUT);
   digitalWrite(RS485_DE_RE, LOW);
@@ -237,13 +268,15 @@ void waitAndServiceOTA(unsigned long ms) {
 }
 
 // Run the pump for PUMP_ON_SECONDS at PUMP_DUTY_PERCENT, then stop.
-// A short full-power kick gets the motor turning before dropping to the quieter duty.
+// Soft-start: ramp the duty up over PUMP_RAMP_MS so the motor's inrush is spread out
+// instead of hitting the 12 V supply as a step (which can brown out the ESP32).
 void runPump() {
-  Serial.printf("Watering: pump on for %d s at %d%%
-", PUMP_ON_SECONDS, PUMP_DUTY_PERCENT);
-  pumpSet(100);
-  waitAndServiceOTA(PUMP_KICK_MS);
-  pumpSet(PUMP_DUTY_PERCENT);
+  Serial.printf("Watering: pump on for %d s at %d%% (ramp %d ms)\n", PUMP_ON_SECONDS, PUMP_DUTY_PERCENT, PUMP_RAMP_MS);
+  const int steps = 20;
+  for (int i = 1; i &lt;= steps; i++) {
+    pumpSet(PUMP_DUTY_PERCENT * i / steps);
+    waitAndServiceOTA(PUMP_RAMP_MS / steps);
+  }
   waitAndServiceOTA((unsigned long)PUMP_ON_SECONDS * 1000UL);
   pumpOff();
   lastWaterMillis = millis();
@@ -274,9 +307,21 @@ int maybeWater(float moisture) {
   }
   if (moisture &gt;= MOISTURE_THRESHOLD) return 0;
 
+  // ---- Safety interlocks, cheapest first ----
+  if (moisture &lt; MOISTURE_MIN_VALID) {
+    Serial.printf("Moisture %.1f%% is below %.1f%% - probe probably not in soil, not watering\n", moisture, (double)MOISTURE_MIN_VALID);
+    return 0;
+  }
+  if (wateringLocked) {
+    Serial.println("Soil is dry, but watering is locked out after a brownout reset - check the 12 V supply");
+    return 0;
+  }
+  if (millis() - bootMillis &lt; (unsigned long)ARM_DELAY_SEC * 1000UL) {
+    Serial.printf("Soil is dry, but we booted &lt; %d s ago - not armed yet\n", ARM_DELAY_SEC);
+    return 0;
+  }
   if (inQuietHours()) {
-    Serial.printf("Soil is dry, but it's quiet hours (%02d:00-%02d:00) - not watering
-", QUIET_START_HOUR, QUIET_END_HOUR);
+    Serial.printf("Soil is dry, but it's quiet hours (%02d:00-%02d:00) - not watering\n", QUIET_START_HOUR, QUIET_END_HOUR);
     return 0;
   }
   if (hasWatered &amp;&amp; (millis() - lastWaterMillis) &lt; (unsigned long)MIN_WATER_INTERVAL_MIN * 60UL * 1000UL) {
@@ -301,11 +346,9 @@ void loop() {
     humidity = node.getResponseBuffer(0) / 10.0;
     temperature = node.getResponseBuffer(1) / 10.0;
     readOk = true;
-    Serial.printf("Moisture: %.1f %%, Temp: %.1f C
-", humidity, temperature);
+    Serial.printf("Moisture: %.1f %%, Temp: %.1f C\n", humidity, temperature);
   } else {
-    Serial.printf("Modbus read failed (code %d) - no watering this cycle
-", result);
+    Serial.printf("Modbus read failed (code %d) - no watering this cycle\n", result);
   }
 
   // Only ever water on a good reading
@@ -322,6 +365,8 @@ void loop() {
   sensor.addField("Pump Seconds", pumpedSeconds);
   sensor.addField("Waterings Today", wateringsToday);
   sensor.addField("Read OK", readOk ? 1 : 0);
+  sensor.addField("Brownout", resetReason == ESP_RST_BROWNOUT ? 1 : 0);
+  sensor.addField("Uptime Min", (int)(millis() / 60000UL));
 
   Serial.print("Writing: ");
   Serial.println(sensor.toLineProtocol());
@@ -334,9 +379,7 @@ void loop() {
     Serial.println(client.getLastErrorMessage());
   }
 
-  Serial.printf("Waiting %d minutes (OTA stays available)
-
-", READ_INTERVAL_MIN);
+  Serial.printf("Waiting %d minutes (OTA stays available)\n\n", READ_INTERVAL_MIN);
   waitAndServiceOTA((unsigned long)READ_INTERVAL_MIN * 60UL * 1000UL);
 }</code></pre></details>
 
