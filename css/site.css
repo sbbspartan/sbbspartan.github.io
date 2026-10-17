@@ -21,7 +21,7 @@
   --font-display: "Newsreader", Georgia, "Times New Roman", serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
-  --measure: 70ch;        /* reading width */
+  --measure: 50rem;       /* reading width (text columns, article headers) */
   --wide: 1120px;         /* page container */
   --gutter: clamp(1rem, 4vw, 2rem);
   --radius: 10px;
@@ -198,6 +198,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-co
 a.card:hover .card-media img { transform: scale(1.03); }
 .card-media.contain { background: #181b1f; }
 .card-media.contain img { object-fit: contain; }
+.card-media.contain.light { background: var(--bg-muted); }
 .card-media.placeholder { display: grid; place-items: center; color: var(--fg-faint); font-family: var(--font-display); font-size: 2.2rem; aspect-ratio: 4 / 2.2; }
 .card-body { padding: 1rem 1.1rem 1.2rem; display: flex; flex-direction: column; gap: .35rem; }
 .card-body h3 { font-size: 1.15rem; margin: 0; }
@@ -214,7 +215,7 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .article-header .intro { color: var(--fg-muted); font-size: 1.15rem; margin-top: .5rem; }
 .article-header .back { display: inline-block; margin-bottom: 1.25rem; font-size: .9rem; color: var(--fg-muted); text-decoration: none; }
 .article-header .back:hover { color: var(--accent); }
-.article { padding-bottom: 3rem; overflow-wrap: anywhere; --measure: 41rem; }  /* fixed width so code blocks share the text column edges */
+.article { padding-bottom: 3rem; overflow-wrap: anywhere; --measure: 50rem; }  /* fixed width so code blocks share the text column edges */
 .article pre { overflow-wrap: normal; }
 .article > pre, .article > pre[class*="language-"] { margin: 1rem auto 1.5rem; }  /* beat prism.css, which resets pre margins */
 .article > * { max-width: var(--measure); margin-inline: auto; }
@@ -239,7 +240,8 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .gallery img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 4 / 3; transition: transform .3s ease; }
 .gallery.cols-1 img, .gallery.contain img { width: auto; max-width: 100%; margin-inline: auto; aspect-ratio: auto; object-fit: contain; max-height: 75vh; }
 .gallery.cols-1 figure { background: none; }
-.gallery figure.plate { background: #fff; padding: .75rem 1rem; }      /* transparent equation GIFs need a light plate in dark mode */
+.gallery figure.plate { background: #fff; padding: .75rem 1rem; }
+.gallery.portrait img { aspect-ratio: 3 / 4; }   /* galleries of portrait photos: taller tiles so less is cropped */      /* transparent equation GIFs need a light plate in dark mode */
 .gallery figure.plate img { margin-inline: auto; }
 /* Inline (text) equations */
 .article .eq { text-align: center; font-family: var(--font-display); font-size: 1.3rem; margin: .25rem auto 1.4rem; }
