@@ -50,7 +50,7 @@
   </div>
 </section>
 <article class="article container">
-<figure class="hero-figure"><a href="img/portfolio/eureka/grinder_done.jpg"><img src="img/portfolio/eureka/grinder_done.jpg" alt="The modded Eureka Mignon with the new touchscreen showing a 18.0 g double dose, and the printed portafilter holder below the chute" loading="eager"></a></figure>
+<figure class="hero-figure"><a href="img/portfolio/eureka/cover.jpg"><img src="img/portfolio/eureka/cover.jpg" alt="The modded Eureka Mignon mid-grind, the touchscreen showing 11.3 g of an 18 g target as grounds fall into the 58 mm portafilter in its printed holder" loading="eager"></a></figure>
 
 <h2>Overview</h2>
 <p>This is a build of <a href="https://github.com/jaapp/smart-grind-by-weight" rel="noopener">jaapp's Smart Grind-by-Weight</a>, which swaps the Eureka's stock display and timer for an ESP32-S3 touchscreen and a load cell under the portafilter. Instead of grinding for a fixed time and weighing afterwards, the grinder weighs as it grinds and stops at the target dose, using a predictive stop that learns the grinder's flow rate and motor lag, then pulses to top up the last fraction of a gram. I followed the upstream <a href="https://github.com/jaapp/smart-grind-by-weight/blob/main/docs/DOC.md" rel="noopener">build documentation</a> closely, including its <a href="https://github.com/jaapp/smart-grind-by-weight/blob/main/docs/DOC.md#recommended-wire-lengths" rel="noopener">recommended wire lengths</a>; the write-up there is excellent, so this page only covers what I changed.</p>
@@ -61,7 +61,7 @@
 <p class="caption">Display, HX711, load cell and brownout capacitor wired up on the bench before going into the grinder.</p>
 
 <h2>58&nbsp;mm portafilter holder</h2>
-<p>The main change from the upstream build is the portafilter holder. My espresso machine is a Decent, so I modelled a new holder in Fusion shaped around its 58&nbsp;mm naked portafilter, open at the front for the handle and sitting under the grinder's chute. It mounts on the load cell in place of the stock holder, and the firmware tares out the portafilter's weight before each grind.</p>
+<p>The main change from the upstream build is the portafilter holder. Rather than a cup holder, I wanted to grind straight into my Decent Espresso's 58&nbsp;mm naked portafilter, so I based the holder on <a href="https://www.printables.com/model/1492985-eureka-specialita-naked-portafilter-and-load-cell" rel="noopener">Steve061's naked portafilter and load cell holder</a> for the Eureka Specialita and upsized it in Fusion to fit the 58&nbsp;mm basket. Like the original, it cradles the portafilter under the chute with the load cell and amplifier tucked in behind, and the firmware tares out the portafilter's weight before each grind.</p>
 <div class="gallery"><figure><a href="img/portfolio/eureka/cad_holder.jpg"><img src="img/portfolio/eureka/cad_holder.jpg" alt="CAD model of the printed portafilter holder mounted on the load cell and back plate" loading="lazy"></a></figure><figure><a href="img/portfolio/eureka/cad_portafilter.jpg"><img src="img/portfolio/eureka/cad_portafilter.jpg" alt="CAD model of the 58 mm naked portafilter sitting in the printed holder" loading="lazy"></a></figure><figure><a href="img/portfolio/eureka/cad_side.jpg"><img src="img/portfolio/eureka/cad_side.jpg" alt="CAD model from below, showing the load cell between the back plate and the portafilter holder" loading="lazy"></a></figure></div>
 <p class="caption">The Fusion model: the holder on the load cell, the 58&nbsp;mm portafilter in place, and a view from below with the load cell between the back plate and the holder. The Fusion file is available here: <a href="docs/eureka_grind_by_weight_58mm_holder.f3d" download>eureka_grind_by_weight_58mm_holder.f3d</a>.</p>
 
@@ -76,6 +76,7 @@
 <h2>Links</h2>
 <ul>
   <li><a href="https://github.com/jaapp/smart-grind-by-weight" rel="noopener">Smart Grind-by-Weight</a> by jaapp — the original project, with build docs, printable parts and wiring.</li>
+  <li><a href="https://www.printables.com/model/1492985-eureka-specialita-naked-portafilter-and-load-cell" rel="noopener">Eureka Specialita naked portafilter and load cell holder</a> by Steve061 on Printables — the basis for my upsized 58&nbsp;mm holder.</li>
   <li><a href="https://marvin-rse.github.io/smart-grind-by-weight/" rel="noopener">marvin-rse's web flasher</a> — the firmware fork used here, with USB and Bluetooth flashing from the browser.</li>
 </ul>
 </article>
