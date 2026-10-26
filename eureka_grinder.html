@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eureka Mignon Grind-by-Weight Mod · Samuel Belden</title>
+  <meta name="description" content="A load cell, HX711 and ESP32-S3 AMOLED touchscreen retrofitted into a Eureka Mignon grinder so it grinds to a target weight, with a 3D-printed holder for a 58 mm Decent Espresso portafilter.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15140f" media="(prefers-color-scheme: dark)">
+  <meta property="og:title" content="Eureka Mignon Grind-by-Weight Mod · Samuel Belden">
+  <meta property="og:description" content="A load cell, HX711 and ESP32-S3 AMOLED touchscreen retrofitted into a Eureka Mignon grinder so it grinds to a target weight, with a 3D-printed holder for a 58 mm Decent Espresso portafilter.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/site.css?v=15">
+</head>
+<body>
+<a class="visually-hidden" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html">Samuel Belden</a>
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <nav class="site-nav" id="site-nav" aria-label="Main">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="ProjectsIndex.html" aria-current="page">Projects</a></li>
+        <li><a href="ActivitiesIndex.html">Activities</a></li>
+        <li><a href="ClassIndex.html">Classes</a></li>
+        <li><a href="ResumeIndex.html">Resume</a></li>
+        <li><a href="OtherIndex.html">Other</a></li>
+        <li><a href="ContactIndex.html">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<section class="article-header">
+  <div class="container">
+    <div class="prose">
+      <a class="back" href="ProjectsIndex.html">← Projects</a>
+      <h1>Eureka Mignon Grind-by-Weight Mod</h1>
+      <p class="intro">Retrofitting my Eureka Mignon so it grinds straight into the portafilter and stops at a target weight, based on the open-source Smart Grind-by-Weight project.</p>
+    </div>
+  </div>
+</section>
+<article class="article container">
+<figure class="hero-figure"><a href="img/portfolio/eureka/grinder_done.jpg"><img src="img/portfolio/eureka/grinder_done.jpg" alt="The modded Eureka Mignon with the new touchscreen showing a 18.0 g double dose, and the printed portafilter holder below the chute" loading="eager"></a></figure>
+
+<h2>Overview</h2>
+<p>This is a build of <a href="https://github.com/jaapp/smart-grind-by-weight" rel="noopener">jaapp's Smart Grind-by-Weight</a>, which swaps the Eureka's stock display and timer for an ESP32-S3 touchscreen and a load cell under the portafilter. Instead of grinding for a fixed time and weighing afterwards, the grinder weighs as it grinds and stops at the target dose, using a predictive stop that learns the grinder's flow rate and motor lag, then pulses to top up the last fraction of a gram. I followed the upstream <a href="https://github.com/jaapp/smart-grind-by-weight/blob/main/docs/DOC.md" rel="noopener">build documentation</a> closely, including its <a href="https://github.com/jaapp/smart-grind-by-weight/blob/main/docs/DOC.md#recommended-wire-lengths" rel="noopener">recommended wire lengths</a>; the write-up there is excellent, so this page only covers what I changed.</p>
+
+<h2>Hardware</h2>
+<p>The parts are the ones the upstream project specifies: a Waveshare ESP32-S3 1.64&Prime; AMOLED touch display that drops into the grinder's original screen opening through a printed adapter, a 1&nbsp;kg bar load cell read by an HX711 amplifier, and a 1000&nbsp;µF capacitor on the supply for brownout protection. The controller switches the grinder's motor through its existing control connector. The load cell and HX711 mount on a printed back plate that clips to the grinder, with the portafilter holder bolted to the free end of the load cell.</p>
+<div class="gallery cols-2 portrait narrow"><figure><a href="img/portfolio/eureka/wiring_1.jpg"><img src="img/portfolio/eureka/wiring_1.jpg" alt="Waveshare AMOLED display board wired to the HX711 load cell amplifier, load cell and capacitor before installation" loading="lazy"></a></figure><figure><a href="img/portfolio/eureka/wiring_2.jpg"><img src="img/portfolio/eureka/wiring_2.jpg" alt="HX711 amplifier and bar load cell mounted to the printed back plate, with the display board wired in" loading="lazy"></a></figure></div>
+<p class="caption">Display, HX711, load cell and brownout capacitor wired up on the bench before going into the grinder.</p>
+
+<h2>58&nbsp;mm portafilter holder</h2>
+<p>The main change from the upstream build is the portafilter holder. My espresso machine is a Decent, so I modelled a new holder in Fusion shaped around its 58&nbsp;mm naked portafilter, open at the front for the handle and sitting under the grinder's chute. It mounts on the load cell in place of the stock holder, and the firmware tares out the portafilter's weight before each grind.</p>
+<div class="gallery"><figure><a href="img/portfolio/eureka/cad_holder.jpg"><img src="img/portfolio/eureka/cad_holder.jpg" alt="CAD model of the printed portafilter holder mounted on the load cell and back plate" loading="lazy"></a></figure><figure><a href="img/portfolio/eureka/cad_portafilter.jpg"><img src="img/portfolio/eureka/cad_portafilter.jpg" alt="CAD model of the 58 mm naked portafilter sitting in the printed holder" loading="lazy"></a></figure><figure><a href="img/portfolio/eureka/cad_side.jpg"><img src="img/portfolio/eureka/cad_side.jpg" alt="CAD model from below, showing the load cell between the back plate and the portafilter holder" loading="lazy"></a></figure></div>
+<p class="caption">The Fusion model: the holder on the load cell, the 58&nbsp;mm portafilter in place, and a view from below with the load cell between the back plate and the holder. The Fusion file is available here: <a href="docs/eureka_grind_by_weight_58mm_holder.f3d" download>eureka_grind_by_weight_58mm_holder.f3d</a>.</p>
+
+<h2>Firmware</h2>
+<p>The other change is the firmware. Instead of the upstream build, the grinder runs <a href="https://marvin-rse.github.io/smart-grind-by-weight/" rel="noopener">marvin-rse's fork</a> of the community firmware, which adds support for the updated Waveshare 1.64&Prime; display (the newer SH8601-based V2 board) alongside the original. It's flashed entirely from the browser: the first install goes over USB with the fork's web flasher in Chrome, and later updates go over Bluetooth from the same page, without opening the grinder. The fork also adds screensaver options for the AMOLED panel, which is nice for a screen that's on all day.</p>
+
+<h2>In use</h2>
+<p>Pick a preset (single, double, or a custom dose), drop the portafilter into the holder, and press start. The screen counts up the dose live and the motor stops on its own at the target.</p>
+<figure class="video"><video controls playsinline preload="metadata" poster="img/portfolio/eureka/grind_poster.jpg"><source src="img/portfolio/eureka/grind_demo.mp4" type="video/mp4">Your browser can't play this video. <a href="img/portfolio/eureka/grind_demo.mp4">Download it</a>.</video></figure>
+<p class="caption">An 18&nbsp;g double dose ground straight into the 58&nbsp;mm portafilter.</p>
+
+<h2>Links</h2>
+<ul>
+  <li><a href="https://github.com/jaapp/smart-grind-by-weight" rel="noopener">Smart Grind-by-Weight</a> by jaapp — the original project, with build docs, printable parts and wiring.</li>
+  <li><a href="https://marvin-rse.github.io/smart-grind-by-weight/" rel="noopener">marvin-rse's web flasher</a> — the firmware fork used here, with USB and Bluetooth flashing from the browser.</li>
+</ul>
+</article>
+</main>
+<footer class="site-footer">
+  <div class="container">
+    <span>&copy; 2026 Samuel Belden</span>
+    <span><a href="mailto:sbelden42@gmail.com">sbelden42@gmail.com</a> &nbsp;&middot;&nbsp; <a href="ResumeIndex.html">Resume</a> &nbsp;&middot;&nbsp; <a href="ProjectsIndex.html">Projects</a></span>
+  </div>
+</footer>
+<script src="js/site.js" defer></script>
+</body>
+</html>

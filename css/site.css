@@ -253,6 +253,7 @@ a.card:hover .card-media img { transform: scale(1.03); }
 .article > .gallery.tiles { max-width: 46rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .gallery.tiles figure { background: #1f2329; }
 .gallery.tiles img { aspect-ratio: 4 / 3; object-fit: contain; }
+.article > .gallery.narrow { max-width: min(100%, 40rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .gallery figure.plate img { margin-inline: auto; }
 /* Inline (text) equations */
 .article .eq { text-align: center; font-family: var(--font-display); font-size: 1.3rem; margin: .25rem auto 1.4rem; }
@@ -303,3 +304,7 @@ details.code-block pre { margin: 0; border: 0; border-top: 1px solid var(--line)
 .lightbox .lb-prev { right: auto; left: 1rem; }
 .lightbox .lb-next { right: 1rem; }
 body.no-scroll { overflow: hidden; }
+
+/* inline video */
+.article > .video { max-width: min(100%, 960px); margin: 1.25rem auto .5rem; text-align: center; }
+.video video { max-width: 100%; max-height: 75vh; border-radius: var(--radius); background: #000; }
