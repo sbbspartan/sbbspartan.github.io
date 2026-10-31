@@ -25,8 +25,36 @@
     });
   }
 
+  // ----- Collapsible article sections (details.sec) -----
+  var secs = Array.prototype.slice.call(document.querySelectorAll('details.sec'));
+  if (secs.length) {
+    // Open every collapsed section that contains the element with this id.
+    var reveal = function (id) {
+      var el = id && document.getElementById(id);
+      if (!el) return;
+      for (var d = el.closest('details'); d; d = d.parentElement && d.parentElement.closest('details')) d.open = true;
+      el.scrollIntoView();
+    };
+    reveal(decodeURIComponent(location.hash.slice(1)));
+    window.addEventListener('hashchange', function () { reveal(decodeURIComponent(location.hash.slice(1))); });
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('a[href^="#"]');
+      if (a && a.getAttribute('href') === location.hash) reveal(a.getAttribute('href').slice(1));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-sec]'), function (btn) {
+      btn.addEventListener('click', function () {
+        var open = btn.getAttribute('data-sec') === 'open';
+        secs.forEach(function (d) { d.open = open; });
+      });
+    });
+    // Print everything, then restore what the reader had open.
+    var saved = null;
+    window.addEventListener('beforeprint', function () { saved = secs.map(function (d) { return d.open; }); secs.forEach(function (d) { d.open = true; }); });
+    window.addEventListener('afterprint', function () { if (saved) secs.forEach(function (d, i) { d.open = saved[i]; }); saved = null; });
+  }
+
   // ----- Lightbox for gallery images -----
-  var links = Array.prototype.slice.call(document.querySelectorAll('.gallery a[href], .hero-figure a[href]'))
+  var links = Array.prototype.slice.call(document.querySelectorAll('.gallery a[href], .hero-figure a[href], .hc-slide a[href]'))
     .filter(function (a) { return /\.(jpe?g|png|gif|webp)$/i.test(a.getAttribute('href')); });
   if (!links.length) return;
 
